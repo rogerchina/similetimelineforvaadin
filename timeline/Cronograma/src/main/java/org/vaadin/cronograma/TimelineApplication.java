@@ -49,7 +49,6 @@ public class TimelineApplication extends com.vaadin.Application {
         main.setImmediate(true);
         try {
             addBandInfosAndZonesIntoTimeline();
-            // addEventsIntoTimeline();
         } catch (ParseException e) {
             e.printStackTrace();
         }
