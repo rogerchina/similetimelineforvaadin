@@ -1,0 +1,1 @@
+@java -cp "%~dp0\src;C:/Development/website/gwt/gwt-windows-1.3.3/gwt-user.jar;C:/Development/website/gwt/gwt-windows-1.3.3/gwt-dev-windows.jar" com.google.gwt.dev.GWTCompiler -out "%~dp0\www" %* com.netthreads.test.simile.timeline.TimeLineTest
