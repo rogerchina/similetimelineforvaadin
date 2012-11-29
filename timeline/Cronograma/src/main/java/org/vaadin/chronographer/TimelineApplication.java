@@ -39,7 +39,7 @@ import com.vaadin.ui.Window;
 @SuppressWarnings("serial")
 public class TimelineApplication extends com.vaadin.Application {
     private final Window main = new Window("Timeline Demo");
-    private final Cronograma timeline = new Cronograma();
+    private final ChronoGrapher timeline = new ChronoGrapher();
     private final DateFormat df = new SimpleDateFormat("yyyy,MM,dd,HH:mm");;
 
     @Override

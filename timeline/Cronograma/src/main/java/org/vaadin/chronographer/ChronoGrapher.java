@@ -39,7 +39,7 @@ import com.vaadin.ui.ClientWidget;
 
 @SuppressWarnings("serial")
 @ClientWidget(VChronoGrapher.class)
-public class Cronograma extends AbstractField {
+public class ChronoGrapher extends AbstractField {
     private final transient DateFormat df = new SimpleDateFormat(
             "EEE MMM dd yyyy HH:mm:ss Z", Locale.US);
 
@@ -50,7 +50,7 @@ public class Cronograma extends AbstractField {
     private boolean eventsChanged = false;
     private boolean structureChanged = false;
 
-    public Cronograma() {
+    public ChronoGrapher() {
         super();
         bandInfos = new ArrayList<TimelineBandInfo>();
         timelineEvents = new Events();
