@@ -12,11 +12,11 @@
         <init-param>
             <description>Vaadin application class to start</description>
             <param-name>application</param-name>
-            <param-value>org.vaadin.cronograma.TimelineApplication</param-value>
+            <param-value>org.vaadin.chronographer.TimelineApplication</param-value>
         </init-param>
         <init-param>
             <param-name>widgetset</param-name>
-            <param-value>org.vaadin.cronograma.gwt.CronogramaWidgetSet</param-value>
+            <param-value>org.vaadin.chronographer.gwt.ChronoGrapherWidgetSet</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
