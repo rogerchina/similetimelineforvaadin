@@ -19,7 +19,15 @@ package org.vaadin.chronographer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import org.vaadin.chronographer.model.HighlighDecorator;
 import org.vaadin.chronographer.model.TimeUnit;
 import org.vaadin.chronographer.model.TimelineBandInfo;
@@ -40,7 +48,10 @@ import com.vaadin.ui.Window;
 public class TimelineApplication extends com.vaadin.Application {
     private final Window main = new Window("Timeline Demo");
     private final ChronoGrapher timeline = new ChronoGrapher();
-    private final DateFormat df = new SimpleDateFormat("yyyy,MM,dd,HH:mm");;
+    private final DateFormat df2 = new SimpleDateFormat(
+            "EEE MMM dd yyyy HH:mm:ss", Locale.US);
+    private final DateFormat df3 = new SimpleDateFormat("MMM dd yyyy HH:mm:ss",
+            Locale.US);
 
     @Override
     public void init() {
@@ -58,7 +69,7 @@ public class TimelineApplication extends com.vaadin.Application {
             public void buttonClick(ClickEvent event) {
                 try {
                     addEventsIntoTimeline();
-                } catch (ParseException e) {
+                } catch (DocumentException e) {
                     e.printStackTrace();
                 }
             }
@@ -85,12 +96,13 @@ public class TimelineApplication extends com.vaadin.Application {
         TimelineBandInfo bandInfo2 = new TimelineBandInfo();
 
         HighlighDecorator deco1 = HighlighDecorator.createSpanDecorator(
-                df.parse("1963,11,22,12:30"), df.parse("1963,11,22,13:00"),
-                "shot", "t.o.d.", "#33C080", 50, theme);
+                df2.parse("Fri Nov 22 1963 12:30:00"),
+                df2.parse("Fri Nov 22 1963 13:00:00"), "shot", "t.o.d.",
+                "#33C080", 50, theme);
         HighlighDecorator deco2 = HighlighDecorator.createPointDecorator(
-                df.parse("1963,11,22,14:38"), "#33C080", 50, theme);
+                df2.parse("Fri Nov 22 1963 14:38:00"), "#33C080", 50, theme);
         HighlighDecorator deco3 = HighlighDecorator.createPointDecorator(
-                df.parse("1963,11,24,13:00"), "#33C080", 50, theme);
+                df2.parse("Sun Nov 24 1963 13:00:00 "), "#33C080", 50, theme);
 
         TimelineZone zone11 = new TimelineZone();
         TimelineZone zone12 = new TimelineZone();
@@ -102,46 +114,46 @@ public class TimelineApplication extends com.vaadin.Application {
         TimelineZone zone23 = new TimelineZone();
         TimelineZone zone24 = new TimelineZone();
 
-        zone11.setStart(df.parse("1963,11,22,00:00"));
-        zone11.setEnd(df.parse("1963,11,25,00:00"));
+        zone11.setStart(df2.parse("Fri Nov 22 1963 00:00:00"));
+        zone11.setEnd(df2.parse("Mon Nov 25 1963 00:00:00"));
         zone11.setMagnify(10);
         zone11.setUnit(TimeUnit.DAY);
 
-        zone12.setStart(df.parse("1963,11,22,00:00"));
-        zone12.setEnd(df.parse("1963,11,24,00:00"));
+        zone12.setStart(df2.parse("Fri Nov 22 1963 09:00:00"));
+        zone12.setEnd(df2.parse("Sun Nov 24 1963 00:00:00"));
         zone12.setMagnify(5);
         zone12.setUnit(TimeUnit.HOUR);
 
-        zone13.setStart(df.parse("1963,11,22,11:00"));
-        zone13.setEnd(df.parse("1963,11,23,00:00"));
+        zone13.setStart(df2.parse("Fri Nov 22 1963 11:00:00"));
+        zone13.setEnd(df2.parse("Sat Nov 23 1963 00:00:00"));
         zone13.setMagnify(5);
         zone13.setUnit(TimeUnit.MINUTE);
         zone13.setMultiple(10);
 
-        zone14.setStart(df.parse("1963,11,22,12:00"));
-        zone14.setEnd(df.parse("1963,11,22,14:00"));
+        zone14.setStart(df2.parse("Fri Nov 22 1963 12:00:00"));
+        zone14.setEnd(df2.parse("Fri Nov 22 1963 14:00:00"));
         zone14.setMagnify(3);
         zone14.setUnit(TimeUnit.MINUTE);
         zone14.setMultiple(5);
 
-        zone21.setStart(df.parse("1963,11,22,00:00"));
-        zone21.setEnd(df.parse("1963,11,25,00:00"));
+        zone21.setStart(df2.parse("Fri Nov 22 1963 00:00:00"));
+        zone21.setEnd(df2.parse("Mon Nov 25 1963 00:00:00"));
         zone21.setMagnify(10);
         zone21.setUnit(TimeUnit.WEEK);
 
-        zone22.setStart(df.parse("1963,11,22,00:00"));
-        zone22.setEnd(df.parse("1963,11,24,00:00"));
+        zone22.setStart(df2.parse("Fri Nov 22 1963 09:00:00"));
+        zone22.setEnd(df2.parse("Sun Nov 24 1963 00:00:00"));
         zone22.setMagnify(5);
         zone22.setUnit(TimeUnit.DAY);
 
-        zone23.setStart(df.parse("1963,11,22,11:00"));
-        zone23.setEnd(df.parse("1963,11,23,00:00"));
+        zone23.setStart(df2.parse("Fri Nov 22 1963 11:00:00"));
+        zone23.setEnd(df2.parse("Sat Nov 23 1963 00:00:00"));
         zone23.setMagnify(5);
         zone23.setUnit(TimeUnit.MINUTE);
         zone23.setMultiple(60);
 
-        zone24.setStart(df.parse("1963,11,22,12:00"));
-        zone24.setEnd(df.parse("1963,11,22,14:00"));
+        zone24.setStart(df2.parse("Fri Nov 22 1963 12:00:00"));
+        zone24.setEnd(df2.parse("Fri Nov 22 1963 14:00:00"));
         zone24.setMagnify(3);
         zone24.setUnit(TimeUnit.MINUTE);
         zone24.setMultiple(15);
@@ -162,14 +174,14 @@ public class TimelineApplication extends com.vaadin.Application {
         bandInfo2.addHighlightDecorator(deco2);
         bandInfo2.addHighlightDecorator(deco3);
 
-        bandInfo1.setDate(df.parse("1963,11,22,13:00"));
+        bandInfo1.setDate(df2.parse("Fri Nov 22 1963 13:00:00"));
         bandInfo1.setTimeZone(-6);
         bandInfo1.setWidth("80%");
         bandInfo1.setIntervalUnit(TimeUnit.WEEK);
-        bandInfo1.setIntervalPixels(200);
+        bandInfo1.setIntervalPixels(220);
         bandInfo1.setTheme(theme);
 
-        bandInfo2.setDate(df.parse("1963,11,22,13:00"));
+        bandInfo2.setDate(df2.parse("Fri Nov 22 1963 13:00:00"));
         bandInfo2.setTimeZone(-6);
         bandInfo2.setWidth("20%");
         bandInfo2.setIntervalUnit(TimeUnit.MONTH);
@@ -183,41 +195,51 @@ public class TimelineApplication extends com.vaadin.Application {
         timeline.addBandInfo(bandInfo2);
     }
 
-    private void addEventsIntoTimeline() throws ParseException {
-        String[] eventStarts = { "1961,05,20,00:00", "1963,05,01,00:00",
-                "1963,05,10,00:00", "1963,06,05,00:00", "1963,10,20,00:00",
-                "1963,11,22,11:00", "1963,11,22,11:10", "1963,11,22,11:30" };
-        String[] eventEnds = { null, "1963,06,01,00:00", null, null, null,
-                null, null, null };
-        String[] eventTitles = { "'Bay of Pigs' Invasion",
-                "Oswald moves to New Orleans", "General Walker shot",
-                "Kennedy, Johnson, Connelly met",
-                "Maurice Bishop seen speaking to Oswald",
-                "Man with rifle spotted on Elm St.",
-                "Air Force One leaves Fort Worth",
-                "Motorcade leaves Lovefield Airport" };
-        String[] eventContents = {
-                null,
-                "Oswald moves to New Orleans, and finds employment at the William B. Riley Coffee Company. &lt;i&gt;ref. Treachery in Dallas, p 320&lt;/i&gt;",
-                "General Walker shot at in his home. &lt;i&gt;ref. Treachery in Dallas, p 319&lt;/i&gt;",
-                "Decision for Texas trip made at meeting with Kennedy, Johnson, and Connelly at the Cortez hotel in El Paso Texas. &lt;i&gt;ref. W.C.&lt;i&gt;",
-                "Antonio Veciana travels to Dallas for a meeting with Maurice Bishop (a.k.a. David Atlee Philips). In the lobby of the Southland building, Veciana sees Bishop speaking to a man Veciana later identifies as Lee Harvey Oswald. &lt;i&gt;ref. Last Investigation, p 141&lt;/i&gt;",
-                "...", "...", ".." };
+    private void addEventsIntoTimeline() throws DocumentException {
+        List<TimelineEvent> events = new ArrayList<TimelineEvent>();
+        SAXReader reader = new SAXReader();
+        Document document = reader.read("jfk.xml");
+        Element root = document.getRootElement();
+        int index = 0;
 
-        TimelineEvent[] events = new TimelineEvent[8];
-        for (int i = 0; i < 8; i++) {
+        // iterate through child elements of root
+        for (Iterator i = root.elementIterator(); i.hasNext();) {
+            Element element = (Element) i.next();
+
+            String start = element.attributeValue("start");
+            String end = element.attributeValue("end");
+            String title = element.attributeValue("title");
+            String content = element.getText();
+
+            start = start.substring(0, start.length() - 9);
+
             TimelineEvent event = new TimelineEvent();
-            event.setStart(df.parse(eventStarts[i]));
-            if (eventEnds[i] != null) {
-                event.setEnd(df.parse(eventEnds[i]));
-                event.setIsDuration(true);
+            try {
+                event.setStart(df2.parse(start));
+                if (end != null) {
+                    end = end.substring(0, end.length() - 9);
+                    event.setEnd(df2.parse(end));
+                    event.setIsDuration(true);
+                }
+            } catch (ParseException e) {
+                try {
+                    event.setStart(df3.parse(start));
+                    if (end != null) {
+                        end = end.substring(0, end.length() - 9);
+                        event.setEnd(df3.parse(end));
+                        event.setIsDuration(true);
+                    }
+                } catch (ParseException e1) {
+                    System.out.println("unparseable date - skipped");
+                    continue;
+                }
             }
-            event.setTitle(eventTitles[i]);
-            event.setBody(eventContents[i]);
-            event.setId(i);
-            events[i] = event;
+            event.setTitle(title);
+            event.setBody(content);
+            event.setId(index);
+            events.add(event);
+            ++index;
         }
         timeline.addEvents(events);
-        System.out.println("requestRepaint");
     }
 }

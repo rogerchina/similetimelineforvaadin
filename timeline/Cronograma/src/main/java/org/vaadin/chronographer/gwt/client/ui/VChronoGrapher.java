@@ -66,7 +66,6 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
                     ClientSizeHelper.getClientHeight() - 100);
 
             getTimeLine().addClickHandler(new EventClickHandler());
-
             inited = true;
         }
 
@@ -86,17 +85,12 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
         layout();
     }
 
-    private void parseDecorators() {
-        // createBandDecorators();
-    }
-
     private void parseBandInfosAndZones(UIDL uidl) {
         UIDL zones = uidl.getChildUIDL(0);
         if (zones != null) {
             for (int i = 0; i < zones.getChildCount(); i++) {
                 createBandInfoAndZones(zones.getChildUIDL(i));
             }
-            parseDecorators();
         }
     }
 
@@ -105,33 +99,19 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
             VConsole.log(uidl.getStringAttribute("jsonevents"));
             getEventSource().loadJSON(uidl.getStringAttribute("jsonevents"));
         }
-
     }
 
     private void createBandInfoAndZones(UIDL childUIDL) {
         BandOptions options = createBandOptions(childUIDL);
-        BandInfo bandInfo = BandInfo.create(options);
-        getBandInfos().add(bandInfo);
-
-        if (childUIDL.hasAttribute("syncWith")) {
-            Integer syncWith = childUIDL.getIntAttribute("syncWith");
-            bandInfo.setSyncWith(syncWith);
-        }
-        if (childUIDL.hasAttribute("highligh")) {
-            Boolean highligh = childUIDL.getBooleanAttribute("highligh");
-            bandInfo.setHighlight(highligh);
-        }
-
-        // Boolean overview = childUIDL.getBooleanAttribute("overview");
 
         List<HotZoneBandOptions> zones = getBandHotZones();
         List<Object> decorators = new ArrayList<Object>();
         for (int i = 0; i < childUIDL.getChildCount(); i++) {
             if (childUIDL.getChildUIDL(i).getTag().equals("z")) {
-                zones.add(createZone(bandInfo, options,
-                        childUIDL.getChildUIDL(i)));
+                zones.add(createZone(options, childUIDL.getChildUIDL(i)));
             } else if (childUIDL.getChildUIDL(i).getTag().equals("d")) {
                 UIDL decoUIDL = childUIDL.getChildUIDL(i);
+
                 if (decoUIDL.hasAttribute("startDate")) {
                     SpanHighlightDecoratorOptions decoOpt = SpanHighlightDecoratorOptions
                             .create();
@@ -173,7 +153,6 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
                     if (decoUIDL.hasAttribute("opacity")) {
                         decoOpt.setOpacity(decoUIDL.getIntAttribute("opacity"));
                     }
-
                     // if (childUIDL.hasAttribute("theme")) {
                     //
                     // }
@@ -187,13 +166,29 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
             }
         }
         options.setZones(zones);
+
+        // create hot zone
+        BandInfo bandInfo = BandInfo.createHotZone(options);
+
+        if (childUIDL.hasAttribute("syncWith")) {
+            Integer syncWith = childUIDL.getIntAttribute("syncWith");
+            bandInfo.setSyncWith(syncWith);
+        }
+        if (childUIDL.hasAttribute("highligh")) {
+            Boolean highligh = childUIDL.getBooleanAttribute("highligh");
+            bandInfo.setHighlight(highligh);
+        }
+        if (childUIDL.hasAttribute("overview")) {
+            Boolean overview = childUIDL.getBooleanAttribute("overview");
+            bandInfo.setOverview(overview);
+        }
+
         bandInfo.setDecorators(decorators);
+        getBandInfos().add(bandInfo);
     }
 
-    private HotZoneBandOptions createZone(BandInfo bandInfo,
-            BandOptions options, UIDL childUIDL) {
+    private HotZoneBandOptions createZone(BandOptions options, UIDL childUIDL) {
         HotZoneBandOptions zone = HotZoneBandOptions.create();
-
         if (childUIDL.hasAttribute("start")) {
             String start = childUIDL.getStringAttribute("start");
             zone.setStart(start);
@@ -214,7 +209,6 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
             Integer unit = childUIDL.getIntAttribute("unit");
             zone.setUnit(unit);
         }
-
         return zone;
     }
 

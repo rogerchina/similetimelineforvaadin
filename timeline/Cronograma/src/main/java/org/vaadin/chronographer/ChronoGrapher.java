@@ -74,6 +74,14 @@ public class ChronoGrapher extends AbstractField {
         requestRepaint();
     }
 
+    public void addEvents(List<TimelineEvent> events) {
+        for (TimelineEvent e : events) {
+            timelineEvents.add(e);
+        }
+        eventsChanged = true;
+        requestRepaint();
+    }
+
     public void clearBandInfos() {
         bandInfos.clear();
         structureChanged = true;

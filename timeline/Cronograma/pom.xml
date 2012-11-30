@@ -265,6 +265,11 @@
 	  <version>7.2.2.v20101205</version>
 	  <scope>test</scope>
 	</dependency>
+	<dependency>
+		<groupId>maven</groupId>
+		<artifactId>dom4j</artifactId>
+		<version>1.7-20060614</version>
+	</dependency>
 	</dependencies>
 
 </project>
