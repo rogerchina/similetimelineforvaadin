@@ -51,6 +51,11 @@ public class BandInfo extends JavaScriptObject
     {
         BandInfoImpl.setHighlight(this, value);
     }
+    
+    public final void setOverview(boolean value)
+    {
+        BandInfoImpl.setOverview(this, value);
+    }
 
     /**
      * optional, Set decorator list

@@ -53,4 +53,8 @@ class BandInfoImpl
     public native static void setCenterVisibleDate(BandInfo band, String date)/*-{
     	band.setCenterVisibleDate(date);
     }-*/;
+
+	public native static void setOverview(BandInfo band, boolean value)/*-{
+        band.overview = value;
+    }-*/;
 }
