@@ -29,6 +29,7 @@ import org.vaadin.chronographer.model.HighlighDecorator;
 import org.vaadin.chronographer.model.TimelineBandInfo;
 import org.vaadin.chronographer.model.TimelineEvent;
 import org.vaadin.chronographer.model.TimelineZone;
+import org.vaadin.chronographer.theme.TimelineTheme;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -44,15 +45,17 @@ public class ChronoGrapher extends AbstractField {
             "EEE MMM dd yyyy HH:mm:ss Z", Locale.US);
 
     private final List<TimelineBandInfo> bandInfos;
-
     private final Events timelineEvents;
+    private final List<TimelineTheme> timelineThemes;
 
     private boolean eventsChanged = false;
     private boolean structureChanged = false;
+    private boolean themeChanged = false;
 
     public ChronoGrapher() {
         super();
         bandInfos = new ArrayList<TimelineBandInfo>();
+        timelineThemes = new ArrayList<TimelineTheme>();
         timelineEvents = new Events();
     }
 
@@ -112,6 +115,11 @@ public class ChronoGrapher extends AbstractField {
             paintEventsOnJSON(target);
             eventsChanged = false;
             System.out.println("...events");
+        }
+        if (themeChanged && timelineThemes != null && timelineThemes.size() > 0) {
+            paintThemesOnJSON(target);
+            themeChanged = false;
+            System.out.println("...theme");
         }
     }
 
@@ -203,7 +211,7 @@ public class ChronoGrapher extends AbstractField {
                     df.format(decorator.getStartDate()));
         }
         if (decorator.getEndDate() != null) {
-            target.addAttribute("end", df.format(decorator.getEndDate()));
+            target.addAttribute("endDate", df.format(decorator.getEndDate()));
         }
         if (decorator.getStartLabel() != null) {
             target.addAttribute("startLabel", decorator.getStartLabel());
@@ -220,9 +228,6 @@ public class ChronoGrapher extends AbstractField {
         if (decorator.getOpacity() != null) {
             target.addAttribute("opacity", decorator.getOpacity());
         }
-        // if (decorator.getUnit() != null) {
-        // target.addAttribute("date", decorator.getUnit().ordinal());
-        // }
         target.endTag("d");
 
     }
@@ -230,12 +235,17 @@ public class ChronoGrapher extends AbstractField {
     private void paintEventsOnJSON(PaintTarget target) throws PaintException {
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
         Gson gson = builder.create();
-        System.out.println(gson.toJson(timelineEvents));
         target.addAttribute("jsonevents", gson.toJson(timelineEvents));
     }
 
+    private void paintThemesOnJSON(PaintTarget target) throws PaintException {
+        GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
+        Gson gson = builder.create();
+        System.out.println(gson.toJson(timelineThemes));
+        target.addAttribute("theme", gson.toJson(timelineThemes));
+    }
+
     /** Deserialize changes received from client. */
-    @SuppressWarnings("unchecked")
     @Override
     public void changeVariables(Object source, Map variables) {
         if (variables.containsKey("onclick")) {
@@ -244,5 +254,10 @@ public class ChronoGrapher extends AbstractField {
                     "Event " + params[0] + " clicked @ (" + params[1] + ","
                             + params[2] + ")");
         }
+    }
+
+    public void addTheme(TimelineTheme theme) {
+        timelineThemes.add(theme);
+        themeChanged = true;
     }
 }

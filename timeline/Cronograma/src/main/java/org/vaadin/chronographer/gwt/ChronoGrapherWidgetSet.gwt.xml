@@ -4,7 +4,7 @@
 	    goal "vaadin:update-widgetset".
 	--> 
  
-	<!-- Inherit DefaultWidgetSet --> 
+	<!-- Inherit DefaultWidgetSet -->  
 	
 	 
     <inherits name="com.google.gwt.json.JSON" />

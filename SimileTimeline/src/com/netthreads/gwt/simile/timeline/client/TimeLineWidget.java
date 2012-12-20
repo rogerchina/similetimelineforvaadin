@@ -35,7 +35,6 @@ import java.util.ArrayList;
  */
 public class TimeLineWidget extends Widget {
 	private EventSource eventSource = null;
-	private Theme theme = null;
 	private ArrayList bandInfos = null;
 	private ArrayList bandHotZones = null;
 	private ArrayList bandDecorators = null;
@@ -58,12 +57,6 @@ public class TimeLineWidget extends Widget {
 		bandInfos = new ArrayList();
 		bandHotZones = new ArrayList();
 		bandDecorators = new ArrayList();
-
-		// ---------------------------------------------------------------
-		// Create Theme object
-		// ---------------------------------------------------------------
-		theme = createTheme();
-		theme.setEventLabelWidth(400);
 
 		// ---------------------------------------------------------------
 		// Event source
@@ -241,10 +234,6 @@ public class TimeLineWidget extends Widget {
 
 	public ArrayList getBandInfos() {
 		return bandInfos;
-	}
-
-	public Theme getTheme() {
-		return theme;
 	}
 
 	/**

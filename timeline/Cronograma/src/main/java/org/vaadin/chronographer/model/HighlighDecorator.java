@@ -2,6 +2,8 @@ package org.vaadin.chronographer.model;
 
 import java.util.Date;
 
+import org.vaadin.chronographer.theme.TimelineTheme;
+
 public class HighlighDecorator {
     private Date startDate;
     private Date endDate;

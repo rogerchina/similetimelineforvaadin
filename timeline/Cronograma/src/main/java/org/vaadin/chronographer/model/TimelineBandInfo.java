@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.vaadin.chronographer.theme.TimelineTheme;
+
 public class TimelineBandInfo {
 
     private Number trackGap;

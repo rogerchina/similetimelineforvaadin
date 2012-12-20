@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -32,8 +33,12 @@ import org.vaadin.chronographer.model.HighlighDecorator;
 import org.vaadin.chronographer.model.TimeUnit;
 import org.vaadin.chronographer.model.TimelineBandInfo;
 import org.vaadin.chronographer.model.TimelineEvent;
-import org.vaadin.chronographer.model.TimelineTheme;
 import org.vaadin.chronographer.model.TimelineZone;
+import org.vaadin.chronographer.theme.TimelineTheme;
+import org.vaadin.chronographer.theme.event.Duration;
+import org.vaadin.chronographer.theme.event.EventsTheme;
+import org.vaadin.chronographer.theme.event.Instant;
+import org.vaadin.chronographer.theme.event.Label;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -48,18 +53,28 @@ import com.vaadin.ui.Window;
 public class TimelineApplication extends com.vaadin.Application {
     private final Window main = new Window("Timeline Demo");
     private final ChronoGrapher timeline = new ChronoGrapher();
+
     private final DateFormat df2 = new SimpleDateFormat(
             "EEE MMM dd yyyy HH:mm:ss", Locale.US);
     private final DateFormat df3 = new SimpleDateFormat("MMM dd yyyy HH:mm:ss",
             Locale.US);
+
+    private TimelineTheme upperBandsTheme;
+    private TimelineTheme lowerBandsTheme;
 
     @Override
     public void init() {
         setMainWindow(main);
         main.setSizeFull();
         main.setImmediate(true);
+
+        df2.setTimeZone(TimeZone.getTimeZone("GMT-0600"));
+        df3.setTimeZone(TimeZone.getTimeZone("GMT-0600"));
+
         try {
             addBandInfosAndZonesIntoTimeline();
+            upperBandsTheme = createUpperBandsTheme();
+            lowerBandsTheme = createLowerBandsTheme();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -79,6 +94,8 @@ public class TimelineApplication extends com.vaadin.Application {
         timeline.setImmediate(true);
         timeline.setWidth("100%");
         timeline.setHeight("500px");
+        timeline.addTheme(upperBandsTheme);
+        timeline.addTheme(lowerBandsTheme);
 
         timeline.addListener(new ValueChangeListener() {
             @Override
@@ -89,30 +106,23 @@ public class TimelineApplication extends com.vaadin.Application {
     }
 
     private void addBandInfosAndZonesIntoTimeline() throws ParseException {
-        TimelineTheme theme = new TimelineTheme();
-        theme.setEventLabelWidth(400);
-
         TimelineBandInfo bandInfo1 = new TimelineBandInfo();
         TimelineBandInfo bandInfo2 = new TimelineBandInfo();
 
         HighlighDecorator deco1 = HighlighDecorator.createSpanDecorator(
                 df2.parse("Fri Nov 22 1963 12:30:00"),
                 df2.parse("Fri Nov 22 1963 13:00:00"), "shot", "t.o.d.",
-                "#33C080", 50, theme);
+                "#FFC080", 50, null);
         HighlighDecorator deco2 = HighlighDecorator.createPointDecorator(
-                df2.parse("Fri Nov 22 1963 14:38:00"), "#33C080", 50, theme);
+                df2.parse("Fri Nov 22 1963 14:38:00"), "#FFC080", 50, null);
         HighlighDecorator deco3 = HighlighDecorator.createPointDecorator(
-                df2.parse("Sun Nov 24 1963 13:00:00 "), "#33C080", 50, theme);
+                df2.parse("Sun Nov 24 1963 13:00:00 "), "#FFC080", 50, null);
 
         TimelineZone zone11 = new TimelineZone();
         TimelineZone zone12 = new TimelineZone();
         TimelineZone zone13 = new TimelineZone();
         TimelineZone zone14 = new TimelineZone();
-
-        TimelineZone zone21 = new TimelineZone();
-        TimelineZone zone22 = new TimelineZone();
-        TimelineZone zone23 = new TimelineZone();
-        TimelineZone zone24 = new TimelineZone();
+        TimelineZone zone2 = new TimelineZone();
 
         zone11.setStart(df2.parse("Fri Nov 22 1963 00:00:00"));
         zone11.setEnd(df2.parse("Mon Nov 25 1963 00:00:00"));
@@ -136,27 +146,11 @@ public class TimelineApplication extends com.vaadin.Application {
         zone14.setUnit(TimeUnit.MINUTE);
         zone14.setMultiple(5);
 
-        zone21.setStart(df2.parse("Fri Nov 22 1963 00:00:00"));
-        zone21.setEnd(df2.parse("Mon Nov 25 1963 00:00:00"));
-        zone21.setMagnify(10);
-        zone21.setUnit(TimeUnit.WEEK);
-
-        zone22.setStart(df2.parse("Fri Nov 22 1963 09:00:00"));
-        zone22.setEnd(df2.parse("Sun Nov 24 1963 00:00:00"));
-        zone22.setMagnify(5);
-        zone22.setUnit(TimeUnit.DAY);
-
-        zone23.setStart(df2.parse("Fri Nov 22 1963 11:00:00"));
-        zone23.setEnd(df2.parse("Sat Nov 23 1963 00:00:00"));
-        zone23.setMagnify(5);
-        zone23.setUnit(TimeUnit.MINUTE);
-        zone23.setMultiple(60);
-
-        zone24.setStart(df2.parse("Fri Nov 22 1963 12:00:00"));
-        zone24.setEnd(df2.parse("Fri Nov 22 1963 14:00:00"));
-        zone24.setMagnify(3);
-        zone24.setUnit(TimeUnit.MINUTE);
-        zone24.setMultiple(15);
+        zone2.setStart(df2.parse("Fri Nov 22 1963 12:00:00"));
+        zone2.setEnd(df2.parse("Fri Nov 22 1963 14:00:00"));
+        zone2.setMagnify(3);
+        zone2.setUnit(TimeUnit.MINUTE);
+        zone2.setMultiple(15);
 
         bandInfo1.addTimelineZone(zone11);
         bandInfo1.addTimelineZone(zone12);
@@ -166,10 +160,7 @@ public class TimelineApplication extends com.vaadin.Application {
         bandInfo1.addHighlightDecorator(deco2);
         bandInfo1.addHighlightDecorator(deco3);
 
-        bandInfo2.addTimelineZone(zone21);
-        bandInfo2.addTimelineZone(zone22);
-        bandInfo2.addTimelineZone(zone23);
-        bandInfo2.addTimelineZone(zone24);
+        bandInfo2.addTimelineZone(zone2);
         bandInfo2.addHighlightDecorator(deco1);
         bandInfo2.addHighlightDecorator(deco2);
         bandInfo2.addHighlightDecorator(deco3);
@@ -179,7 +170,7 @@ public class TimelineApplication extends com.vaadin.Application {
         bandInfo1.setWidth("80%");
         bandInfo1.setIntervalUnit(TimeUnit.WEEK);
         bandInfo1.setIntervalPixels(220);
-        bandInfo1.setTheme(theme);
+        bandInfo1.setTheme(upperBandsTheme);
 
         bandInfo2.setDate(df2.parse("Fri Nov 22 1963 13:00:00"));
         bandInfo2.setTimeZone(-6);
@@ -187,12 +178,71 @@ public class TimelineApplication extends com.vaadin.Application {
         bandInfo2.setIntervalUnit(TimeUnit.MONTH);
         bandInfo2.setIntervalPixels(200);
         bandInfo2.setOverview(true);
-        bandInfo2.setTheme(theme);
+        bandInfo2.setTheme(lowerBandsTheme);
         bandInfo2.setSyncWith(0);
         bandInfo2.setHighligh(true);
 
         timeline.addBandInfo(bandInfo1);
         timeline.addBandInfo(bandInfo2);
+    }
+
+    private TimelineTheme createUpperBandsTheme() {
+        EventsTheme event = new EventsTheme();
+        Label label = new Label();
+        label.setInsideColor("green");
+        label.setOutsideColor("#554400");
+
+        Instant instant = new Instant();
+        instant.setIcon("js/api/images/dull-green-circle.png");
+        instant.setLineColor("black");
+        instant.setImpreciseColor("gray");
+        instant.setImpreciseOpacity(20);
+        instant.setShowLineForNoText(false);
+
+        Duration duration = new Duration();
+        duration.setColor("red");
+        duration.setOpacity(30);
+        duration.setImpreciseColor("gray");
+        duration.setImpreciseOpacity(20);
+
+        event.setLabel(label);
+        event.setInstant(instant);
+        event.setDuration(duration);
+
+        TimelineTheme theme = new TimelineTheme();
+        theme.setEvent(event);
+        theme.setFirstDayOfWeek(1);
+        theme.setThemesIndex(0);
+
+        return theme;
+    }
+
+    private TimelineTheme createLowerBandsTheme() {
+        EventsTheme event = new EventsTheme();
+        Label label = new Label();
+        label.setWidth(18);
+
+        Instant instant = new Instant();
+        instant.setIcon("js/api/images/blue-mark.png");
+        instant.setLineColor("black");
+        instant.setImpreciseColor("red");
+        instant.setImpreciseOpacity(20);
+        instant.setShowLineForNoText(false);
+
+        Duration duration = new Duration();
+        duration.setImpreciseColor("red");
+        duration.setImpreciseOpacity(40);
+
+        event.setLabel(label);
+        event.setInstant(instant);
+        event.setDuration(duration);
+
+        TimelineTheme theme = new TimelineTheme();
+        theme.setEvent(event);
+        theme.setFirstDayOfWeek(1);
+        theme.setThemesIndex(1);
+
+        return theme;
     }
 
     private void addEventsIntoTimeline() throws DocumentException {
@@ -210,8 +260,17 @@ public class TimelineApplication extends com.vaadin.Application {
             String end = element.attributeValue("end");
             String title = element.attributeValue("title");
             String content = element.getText();
-
             start = start.substring(0, start.length() - 9);
+
+            String icon = element.attributeValue("icon");
+            String image = element.attributeValue("image");
+            String link = element.attributeValue("link");
+            String tapeImage = element.attributeValue("tapeImage");
+            String tapeRepeat = element.attributeValue("tapeRepeat");
+            String caption = element.attributeValue("caption");
+            String classname = element.attributeValue("classname");
+            String color = element.attributeValue("color");
+            String textColor = element.attributeValue("textColor");
 
             TimelineEvent event = new TimelineEvent();
             try {
@@ -237,7 +296,18 @@ public class TimelineApplication extends com.vaadin.Application {
             event.setTitle(title);
             event.setBody(content);
             event.setId(index);
+            event.setIcon(icon);
+            event.setImage(image);
+            event.setLink(link);
+            event.setTapeImage(tapeImage);
+            event.setTapeRepeat(tapeRepeat);
+            event.setCaption(caption);
+            event.setClassname(classname);
+            event.setColor(color);
+            event.setTextColor(textColor);
+
             events.add(event);
+
             ++index;
         }
         timeline.addEvents(events);

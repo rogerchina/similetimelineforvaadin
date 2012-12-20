@@ -34,7 +34,7 @@ public class StonehengeRender implements ITimeLineRender
     	ArrayList bandDecorators = widget.getBandDecorators();
     	EventSource eventSource = widget.getEventSource();
 
-    	Theme theme = widget.getTheme();
+    	Theme theme = Theme.create();
         theme.setEventLabelWidth(400);
         
         // ---------------------------------------------------------------

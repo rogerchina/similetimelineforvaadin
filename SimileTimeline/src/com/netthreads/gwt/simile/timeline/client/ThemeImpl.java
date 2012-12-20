@@ -33,9 +33,56 @@ class ThemeImpl
         theme.event.label.width = 400; // default px 
         return theme;
     }-*/;
-
-    public native static void setEventLabelWidth(Theme theme, int width) /*-{
-        theme.event.label.width = width; // px 
-    }-*/;
     
+    public native static void setEventTrackOffset(Theme theme, float offset) /*-{
+    theme.event.track.offset = offset; // em 
+}-*/;
+    public native static void setEventTrackHeight(Theme theme, float height) /*-{
+    theme.event.track.height = height; // em 
+}-*/;
+    public native static void setEventTrackGap(Theme theme, float gap) /*-{
+    theme.event.track.gap = gap; // em
+}-*/;
+    public native static void setEventInstantIcon(Theme theme, String icon) /*-{
+    theme.event.instant.icon = icon
+}-*/;
+    public native static void setEventInstantLineColor(Theme theme, String lineColor) /*-{
+    theme.event.instant.lineColor = lineColor;
+}-*/;
+    public native static void setEventInstantImpreciseColor(Theme theme, String impreciseColor) /*-{
+    theme.event.instant.impreciseColor = impreciseColor; 
+}-*/;
+    public native static void setEventInstantImpreciseOpacity(Theme theme, int impreciseOpacity) /*-{
+    theme.event.instant.impreciseOpacity = impreciseOpacity;
+}-*/;
+    public native static void setEventInstantShowLineForNoText(Theme theme, boolean showLineForNoText) /*-{
+    theme.event.instant.showLineForNoText = showLineForNoText; 
+}-*/;
+    public native static void setEventDurationColor(Theme theme, String color) /*-{
+    theme.event.duration.color = color;
+}-*/;
+    public native static void setEventDurationOpacity(Theme theme, int opacity) /*-{
+    theme.event.duration.opacity = opacity;
+}-*/;
+    public native static void setEventDurationImpreciseColor(Theme theme, String impreciseColor) /*-{
+    theme.event.duration.impreciseColor = impreciseColor;
+}-*/;
+    public native static void setEventDurationImpreciseOpacity(Theme theme, int impreciseOpacity) /*-{
+    theme.event.duration.impreciseOpacity = impreciseOpacity;
+}-*/;
+    public native static void setEventLabelInsideColor(Theme theme, String insideColor) /*-{
+    theme.event.label.insideColor = insideColor;
+}-*/;
+    public native static void setEventLabelOutsideColor(Theme theme, String outsideColor) /*-{
+    theme.event.label.outsideColor = outsideColor;
+}-*/;
+    public native static void setEventLabelWidth(Theme theme, int width) /*-{
+    theme.event.label.width = width;
+}-*/;
+    public native static void setEventHighlightColors(Theme theme, String[] highlightColors) /*-{
+    theme.event.label.highlightColors = highlightColors;
+}-*/;
+    public native static void setFirstDayOfWeek(Theme theme, int firstDayOfWeek) /*-{
+    theme.firstDayOfWeek = firstDayOfWeek;
+}-*/;
 }

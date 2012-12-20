@@ -5,12 +5,12 @@
   <groupId>org.vaadin</groupId>
   <artifactId>chronographer</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2</version>
   <name>Vaadin Web Application</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <vaadin.version>6.8.5</vaadin.version>
+    <vaadin.version>6.8.6</vaadin.version>
     <gwt.version>2.3.0</gwt.version>
     <gwt.plugin.version>2.3.0</gwt.plugin.version>
   </properties>

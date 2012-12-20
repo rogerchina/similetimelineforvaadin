@@ -19,6 +19,10 @@ package org.vaadin.chronographer.gwt.client.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.WindowResizeListener;
 import com.netthreads.gwt.simile.timeline.client.BandInfo;
@@ -36,15 +40,16 @@ import com.netthreads.gwt.simile.timeline.client.TimeLineWidget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
-import com.vaadin.terminal.gwt.client.VConsole;
 
 public class VChronoGrapher extends TimeLineWidget implements Paintable,
         WindowResizeListener {
-
     public static final String CLASSNAME = "timeline";
-    String uidlId;
-    ApplicationConnection client;
+    private String uidlId;
+    private ApplicationConnection client;
     private boolean inited = false;
+
+    private final List<BandOptions> ourBandOptions = new ArrayList<BandOptions>();
+    private final List<Theme> ourThemes = new ArrayList<Theme>();
 
     public VChronoGrapher() {
         super();
@@ -62,9 +67,10 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
         if (!inited) {
             Window.addWindowResizeListener(this);
             parseBandInfosAndZones(uidl);
+            parseThemeJSON(uidl);
+
             initialise(getElement().getClientWidth(),
                     ClientSizeHelper.getClientHeight() - 100);
-
             getTimeLine().addClickHandler(new EventClickHandler());
             inited = true;
         }
@@ -86,25 +92,186 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
     }
 
     private void parseBandInfosAndZones(UIDL uidl) {
-        UIDL zones = uidl.getChildUIDL(0);
-        if (zones != null) {
-            for (int i = 0; i < zones.getChildCount(); i++) {
-                createBandInfoAndZones(zones.getChildUIDL(i));
+        UIDL bandInfoContent = uidl.getChildByTagName("infos");
+        if (bandInfoContent != null) {
+            for (int i = 0; i < bandInfoContent.getChildCount(); i++) {
+                createBandInfoAndZones(bandInfoContent.getChildUIDL(i));
             }
         }
     }
 
     private void parseEventsJSON(UIDL uidl) {
         if (uidl.hasAttribute("jsonevents")) {
-            VConsole.log(uidl.getStringAttribute("jsonevents"));
             getEventSource().loadJSON(uidl.getStringAttribute("jsonevents"));
+        }
+    }
+
+    private void parseThemeJSON(UIDL uidl) {
+        if (uidl.hasAttribute("theme")) {
+            JSONArray themeObjArray = JSONParser.parseStrict(
+                    uidl.getStringAttribute("theme")).isArray();
+
+            // while (ourThemes.size() < themeObjArray.size()) {
+            // ourThemes.add(Theme.create());
+            // }
+
+            for (int i = 0; i < themeObjArray.size(); i++) {
+                JSONObject themeObj = themeObjArray.get(i).isObject();
+                Theme theme = ourThemes.get(i);
+                if (themeObj.containsKey("firstDayOfWeek")) {
+                    int firstDayOfWeek = (int) themeObj.get("firstDayOfWeek")
+                            .isNumber().doubleValue();
+                    theme.setFirstDayOfWeek(firstDayOfWeek);
+                }
+                if (themeObj.containsKey("themesIndex")) {
+                    int themesIndex = (int) themeObj.get("themesIndex")
+                            .isNumber().doubleValue();
+                    ourBandOptions.get(themesIndex).setTheme(theme);
+                } else {
+                    ourBandOptions.get(i).setTheme(theme);
+                }
+
+                JSONObject eventTheme = null;
+                if (themeObj.containsKey("event")) {
+                    eventTheme = themeObj.get("event").isObject();
+
+                    JSONObject track = null;
+                    JSONObject instant = null;
+                    JSONObject duration = null;
+                    JSONObject label = null;
+                    JSONArray highlightColors = null;
+
+                    if (eventTheme.containsKey("track")) {
+                        track = eventTheme.get("track").isObject();
+                    }
+                    if (eventTheme.containsKey("instant")) {
+                        instant = eventTheme.get("instant").isObject();
+                    }
+                    if (eventTheme.containsKey("duration")) {
+                        duration = eventTheme.get("duration").isObject();
+                    }
+                    if (eventTheme.containsKey("label")) {
+                        label = eventTheme.get("label").isObject();
+                    }
+                    if (eventTheme.containsKey("highlightColors")) {
+                        highlightColors = eventTheme.get("highlightColors")
+                                .isArray();
+                    }
+
+                    if (track != null) {
+                        if (track.containsKey("gap")) {
+                            theme.setEventTrackGap((float) track.get("gap")
+                                    .isNumber().doubleValue());
+                        }
+                        if (track.containsKey("height")) {
+                            theme.setEventTrackHeight((float) track
+                                    .get("height").isNumber().doubleValue());
+                        }
+                        if (track.containsKey("offset")) {
+                            theme.setEventTrackOffset((float) track
+                                    .get("offset").isNumber().doubleValue());
+                        }
+                    }
+
+                    if (instant != null) {
+                        if (instant.containsKey("offset")) {
+                            theme.setEventInstantIcon(instant.get("offset")
+                                    .isString().stringValue());
+                        }
+                        if (instant.containsKey("impreciseColor")) {
+                            theme.setEventInstantImpreciseColor(instant
+                                    .get("impreciseColor").isString()
+                                    .stringValue());
+                        }
+                        if (instant.containsKey("impreciseOpacity")) {
+                            theme.setEventInstantImpreciseOpacity((int) instant
+                                    .get("impreciseOpacity").isNumber()
+                                    .doubleValue());
+                        }
+                        if (instant.containsKey("lineColor")) {
+                            theme.setEventInstantLineColor(instant
+                                    .get("lineColor").isString().stringValue());
+                        }
+                        if (instant.containsKey("showLineForNoText")) {
+                            theme.setEventInstantShowLineForNoText(instant
+                                    .get("showLineForNoText").isBoolean()
+                                    .booleanValue());
+                        }
+                        if (instant.containsKey("icon")) {
+                            theme.setEventInstantIcon(GWT.getModuleBaseURL()
+                                    + instant.get("icon").isString()
+                                            .stringValue());
+                        }
+                    }
+
+                    if (duration != null) {
+                        if (duration.containsKey("color")) {
+                            theme.setEventDurationColor(duration.get("color")
+                                    .isString().stringValue());
+                        }
+                        if (duration.containsKey("impreciseColor")) {
+                            theme.setEventDurationImpreciseColor(duration
+                                    .get("impreciseColor").isString()
+                                    .stringValue());
+                        }
+                        if (duration.containsKey("impreciseOpacity")) {
+                            theme.setEventDurationImpreciseOpacity((int) duration
+                                    .get("impreciseOpacity").isNumber()
+                                    .doubleValue());
+                        }
+                        if (duration.containsKey("opacity")) {
+                            theme.setEventDurationOpacity((int) duration
+                                    .get("opacity").isNumber().doubleValue());
+                        }
+                    }
+
+                    if (label != null) {
+                        if (label.containsKey("insideColor")) {
+                            theme.setEventLabelInsideColor(label
+                                    .get("insideColor").isString()
+                                    .stringValue());
+                        }
+                        if (label.containsKey("outsideColor")) {
+                            theme.setEventLabelOutsideColor(label
+                                    .get("outsideColor").isString()
+                                    .stringValue());
+                        }
+                        if (label.containsKey("width")) {
+                            theme.setEventLabelWidth((int) label.get("width")
+                                    .isNumber().doubleValue());
+                        }
+                    }
+                }
+                // theme.setEventHighlightColors(highlightColors.);
+            }
         }
     }
 
     private void createBandInfoAndZones(UIDL childUIDL) {
         BandOptions options = createBandOptions(childUIDL);
+        Integer syncWith = null;
+        Boolean highligh = null;
+        Boolean overview = null;
+
+        // parse parameters for BandInfo-objects
+        if (childUIDL.hasAttribute("syncWith")) {
+            syncWith = childUIDL.getIntAttribute("syncWith");
+        }
+        if (childUIDL.hasAttribute("highligh")) {
+            highligh = childUIDL.getBooleanAttribute("highligh");
+        }
+        if (childUIDL.hasAttribute("overview")) {
+            overview = childUIDL.getBooleanAttribute("overview");
+        }
+
+        Theme theme = Theme.create();
+        options.setTheme(theme);
+
+        ourBandOptions.add(options);
+        ourThemes.add(theme);
 
         List<HotZoneBandOptions> zones = getBandHotZones();
+
         List<Object> decorators = new ArrayList<Object>();
         for (int i = 0; i < childUIDL.getChildCount(); i++) {
             if (childUIDL.getChildUIDL(i).getTag().equals("z")) {
@@ -135,10 +302,7 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
                     if (decoUIDL.hasAttribute("opacity")) {
                         decoOpt.setOpacity(decoUIDL.getIntAttribute("opacity"));
                     }
-                    // if (childUIDL.hasAttribute("theme")) {
-                    // decoOpt.setEndDate(childUIDL.getStringAttribute(""));
-                    // }
-                    decoOpt.setTheme(getTheme());
+                    decoOpt.setTheme(theme);
 
                     SpanHighlightDecorator deco = SpanHighlightDecorator
                             .create(decoOpt);
@@ -153,10 +317,7 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
                     if (decoUIDL.hasAttribute("opacity")) {
                         decoOpt.setOpacity(decoUIDL.getIntAttribute("opacity"));
                     }
-                    // if (childUIDL.hasAttribute("theme")) {
-                    //
-                    // }
-                    decoOpt.setTheme(getTheme());
+                    decoOpt.setTheme(theme);
 
                     PointHighlightDecorator deco = PointHighlightDecorator
                             .create(decoOpt);
@@ -169,17 +330,13 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
 
         // create hot zone
         BandInfo bandInfo = BandInfo.createHotZone(options);
-
-        if (childUIDL.hasAttribute("syncWith")) {
-            Integer syncWith = childUIDL.getIntAttribute("syncWith");
+        if (syncWith != null) {
             bandInfo.setSyncWith(syncWith);
         }
-        if (childUIDL.hasAttribute("highligh")) {
-            Boolean highligh = childUIDL.getBooleanAttribute("highligh");
+        if (highligh != null) {
             bandInfo.setHighlight(highligh);
         }
-        if (childUIDL.hasAttribute("overview")) {
-            Boolean overview = childUIDL.getBooleanAttribute("overview");
+        if (overview != null) {
             bandInfo.setOverview(overview);
         }
 
@@ -215,15 +372,11 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
     private BandOptions createBandOptions(UIDL childUIDL) {
         BandOptions options = BandOptions.create();
         EventSource eventSource = getEventSource();
-        Theme theme = getTheme();
+
         if (eventSource == null) {
             eventSource = EventSource.create();
         }
-        if (theme == null) {
-            theme = Theme.create();
-        }
         options.setEventSource(eventSource);
-        options.setTheme(theme);
 
         if (childUIDL.hasAttribute("width")) {
             String width = childUIDL.getStringAttribute("width");
@@ -254,6 +407,10 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
             Boolean showEventText = childUIDL
                     .getBooleanAttribute("showEventText");
             options.setShowEventText(showEventText);
+        }
+        if (childUIDL.hasAttribute("timeZone")) {
+            Integer timeZone = childUIDL.getIntAttribute("timeZone");
+            options.setTimeZone(timeZone);
         }
 
         return options;
