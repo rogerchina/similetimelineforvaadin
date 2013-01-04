@@ -20,11 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.WindowResizeListener;
 import com.netthreads.gwt.simile.timeline.client.BandInfo;
 import com.netthreads.gwt.simile.timeline.client.BandOptions;
 import com.netthreads.gwt.simile.timeline.client.ClientSizeHelper;
@@ -42,7 +43,7 @@ import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
 
 public class VChronoGrapher extends TimeLineWidget implements Paintable,
-        WindowResizeListener {
+        ResizeHandler {
     public static final String CLASSNAME = "timeline";
     private String uidlId;
     private ApplicationConnection client;
@@ -51,13 +52,16 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
     private final List<BandOptions> ourBandOptions = new ArrayList<BandOptions>();
     private final List<Theme> ourThemes = new ArrayList<Theme>();
 
+    private int width;
+    private int height;
+
     public VChronoGrapher() {
         super();
         setStyleName(CLASSNAME);
     }
 
     @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+    public void updateFromUIDL(final UIDL uidl, ApplicationConnection client) {
         if (client.updateComponent(this, uidl, true)) {
             return;
         }
@@ -65,30 +69,47 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
         uidlId = uidl.getId();
 
         if (!inited) {
-            Window.addWindowResizeListener(this);
+            String widthStr = uidl.getStringAttribute("width");
+            String heightStr = uidl.getStringAttribute("height");
+            extractPixelWidthAndHeights(widthStr, heightStr);
+
+            Window.addResizeHandler(this);
+            setHorizontalOrientation(uidl.getBooleanAttribute("horizontal"));
+
             parseBandInfosAndZones(uidl);
             parseThemeJSON(uidl);
 
-            initialise(getElement().getClientWidth(),
-                    ClientSizeHelper.getClientHeight() - 100);
+            initialise(width, height);
             getTimeLine().addClickHandler(new EventClickHandler());
             inited = true;
         }
-
         parseEventsJSON(uidl);
-        onWindowResized(ClientSizeHelper.getClientWidth(),
-                ClientSizeHelper.getClientHeight());
+        onResize(true);
     }
 
-    /**
-     * Resize all components
-     */
-    @Override
-    public void onWindowResized(int width, int height) {
-        setWidth(Integer.toString(width) + "px");
-        setHeight(Integer.toString(height) + "px");
-        initialise(width, height - 100);
-        layout();
+    private void extractPixelWidthAndHeights(String widthStr, String heightStr) {
+        width = ClientSizeHelper.getClientWidth();
+        height = ClientSizeHelper.getClientHeight();
+
+        if (widthStr.endsWith("px")) {
+            width = Integer.parseInt(widthStr.substring(0,
+                    widthStr.length() - 2).trim());
+        } else if (widthStr.endsWith("%")) {
+            int clientWidth = ClientSizeHelper.getClientWidth();
+            int percentage = Integer.parseInt(widthStr.substring(0,
+                    widthStr.length() - 1).trim());
+            width = (int) (clientWidth * (percentage / 100.0));
+        }
+
+        if (heightStr.endsWith("px")) {
+            height = Integer.parseInt(heightStr.substring(0,
+                    heightStr.length() - 2).trim());
+        } else if (heightStr.endsWith("%")) {
+            int clientHeight = ClientSizeHelper.getClientHeight();
+            int percentage = Integer.parseInt(heightStr.substring(0,
+                    heightStr.length() - 1).trim());
+            height = (int) (clientHeight * (percentage / 100.0));
+        }
     }
 
     private void parseBandInfosAndZones(UIDL uidl) {
@@ -110,10 +131,6 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
         if (uidl.hasAttribute("theme")) {
             JSONArray themeObjArray = JSONParser.parseStrict(
                     uidl.getStringAttribute("theme")).isArray();
-
-            // while (ourThemes.size() < themeObjArray.size()) {
-            // ourThemes.add(Theme.create());
-            // }
 
             for (int i = 0; i < themeObjArray.size(); i++) {
                 JSONObject themeObj = themeObjArray.get(i).isObject();
@@ -416,11 +433,37 @@ public class VChronoGrapher extends TimeLineWidget implements Paintable,
         return options;
     }
 
+    /**
+     * Resize all components
+     */
+    private void onResize(boolean create) {
+        if (width <= 0) {
+            width = ClientSizeHelper.getClientWidth();
+        }
+        if (height <= 0) {
+            height = ClientSizeHelper.getClientHeight();
+        }
+        if (create || getTimeLine() == null) {
+            setWidth(Integer.toString(width) + "px");
+            setHeight(Integer.toString(height) + "px");
+            create();
+        }
+        layout();
+    }
+
+    /**
+     * Resize all components
+     */
+    @Override
+    public void onResize(ResizeEvent event) {
+        onResize(true);
+    }
+
     class EventClickHandler implements TimeLineClickHandler {
         @Override
-        public void onClick(int id, int x, int y, String description) {
-            client.updateVariable(uidlId, "onclick", new Object[] { id, x, y },
-                    true);
+        public void onClick(int idd, int x, int y) {
+            client.updateVariable(uidlId, "onclick",
+                    new Object[] { idd, x, y }, true);
         }
-    };
+    }
 }

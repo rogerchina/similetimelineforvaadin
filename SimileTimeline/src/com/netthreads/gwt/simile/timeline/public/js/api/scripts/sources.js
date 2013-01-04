@@ -93,7 +93,7 @@ Timeline.DefaultEventSource.prototype.loadJSON = function(data, url) {
                 parseDateTimeFunction(event.end),
                 parseDateTimeFunction(event.latestStart),
                 parseDateTimeFunction(event.earliestEnd),
-                event.isDuration || false,
+                !event.isDuration,
                 event.title,
                 event.description,
                 this._resolveRelativeURL(event.image, base),

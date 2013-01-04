@@ -22,7 +22,7 @@ Timeline.Platform = new Object();
     */
 
 (function() {
-    var bundle = true;
+    var bundle = false;
     var javascriptFiles = [
         "timeline.js",
         

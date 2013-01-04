@@ -41,7 +41,7 @@ import com.vaadin.ui.ClientWidget;
 @SuppressWarnings("serial")
 @ClientWidget(VChronoGrapher.class)
 public class ChronoGrapher extends AbstractField {
-    private final transient DateFormat df = new SimpleDateFormat(
+    private transient DateFormat df = new SimpleDateFormat(
             "EEE MMM dd yyyy HH:mm:ss Z", Locale.US);
 
     private final List<TimelineBandInfo> bandInfos;
@@ -51,6 +51,9 @@ public class ChronoGrapher extends AbstractField {
     private boolean eventsChanged = false;
     private boolean structureChanged = false;
     private boolean themeChanged = false;
+
+    private String width = "";
+    private String height = "";
 
     public ChronoGrapher() {
         super();
@@ -107,6 +110,8 @@ public class ChronoGrapher extends AbstractField {
         System.out.println("Cronograma.paintContent");
         super.paintContent(target);
         if (structureChanged) {
+            target.addAttribute("width", width);
+            target.addAttribute("height", height);
             paintBandInfosAndZones(target);
             structureChanged = false;
             System.out.println("..structure");
@@ -125,6 +130,8 @@ public class ChronoGrapher extends AbstractField {
 
     private void paintBandInfosAndZones(PaintTarget target)
             throws PaintException {
+        target.addAttribute("horizontal", true);
+
         target.startTag("infos");
         for (TimelineBandInfo info : bandInfos) {
             target.startTag("b");
@@ -260,4 +267,25 @@ public class ChronoGrapher extends AbstractField {
         timelineThemes.add(theme);
         themeChanged = true;
     }
+
+    public void setDateFormatter(DateFormat df) {
+        this.df = df;
+    }
+
+    public DateFormat getDateFormatter() {
+        return df;
+    }
+
+    @Override
+    public void setWidth(String width) {
+        this.width = width;
+        super.setWidth(width);
+    }
+
+    @Override
+    public void setHeight(String height) {
+        this.height = height;
+        super.setHeight(height);
+    }
+
 }

@@ -5,12 +5,12 @@
   <groupId>org.vaadin</groupId>
   <artifactId>chronographer</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
   <name>Vaadin Web Application</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <vaadin.version>6.8.6</vaadin.version>
+    <vaadin.version>6.8.7</vaadin.version>
     <gwt.version>2.3.0</gwt.version>
     <gwt.plugin.version>2.3.0</gwt.plugin.version>
   </properties>
@@ -108,8 +108,8 @@
             <contextPath>/chronographer</contextPath>
             <baseResource implementation="org.mortbay.resource.ResourceCollection">
               <!-- Workaround for Maven/Jetty issue http://jira.codehaus.org/browse/JETTY-680 -->
-              <!-- <resources>src/main/webapp,${project.build.directory}/${project.build.finalName}</resources> -->
-              <resourcesAsCSV>src/main/webapp,${project.build.directory}/${project.build.finalName}</resourcesAsCSV>
+              <!-- <resources>${project.build.directory}/${project.build.finalName}</resources> -->
+              <resourcesAsCSV>${project.build.directory}/${project.build.finalName}</resourcesAsCSV>
             </baseResource>
           </webAppConfig>
         </configuration>
@@ -171,6 +171,9 @@
     <resources>
 		<resource>
 			<directory>src/main/java</directory>
+		</resource>
+		<resource>
+			<directory>src/test/java</directory>
 		</resource>
 	</resources>
   </build>
@@ -244,7 +247,7 @@
 	<dependency>
 		<groupId>com.netthreads</groupId>
 		<artifactId>gwt-simile-timeline</artifactId>
-		<version>v1.5.1</version>
+		<version>2.3.0</version>
 	</dependency>
     <dependency>
       <groupId>javax.validation</groupId>

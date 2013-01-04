@@ -5,7 +5,7 @@
 
 
 Timeline.DefaultEventSource = function(eventIndex) {
-    this._events = (eventIndex instanceof Object) ? eventIndex : new Timeline.EventIndex();
+    this._events = (eventIndex instanceof Object) ? eventIndex : new SimileAjax.EventIndex();
     this._listeners = [];
 };
 
@@ -41,21 +41,35 @@ Timeline.DefaultEventSource.prototype.loadXML = function(xml, url) {
             if (node.firstChild != null && node.firstChild.nodeType == 3) {
                 description = node.firstChild.nodeValue;
             }
-            var evt = new Timeline.DefaultEventSource.Event(
-            	node.getAttribute("id"),
-                parseDateTimeFunction(node.getAttribute("start")),
-                parseDateTimeFunction(node.getAttribute("end")),
-                parseDateTimeFunction(node.getAttribute("latestStart")),
-                parseDateTimeFunction(node.getAttribute("earliestEnd")),
-                node.getAttribute("isDuration") != "true",
-                node.getAttribute("title"),
-                description,
-                this._resolveRelativeURL(node.getAttribute("image"), base),
-                this._resolveRelativeURL(node.getAttribute("link"), base),
-                this._resolveRelativeURL(node.getAttribute("icon"), base),
-                node.getAttribute("color"),
-                node.getAttribute("textColor")
-            );
+            // instant event: default is true. Or use values from isDuration or durationEvent
+            var instant = (node.getAttribute("isDuration")    === null &&
+                           node.getAttribute("durationEvent") === null) ||
+                          node.getAttribute("isDuration") == "false" ||
+                          node.getAttribute("durationEvent") == "false";
+            
+            var evt = new Timeline.DefaultEventSource.Event( {
+                          id: node.getAttribute("id"),
+                       start: parseDateTimeFunction(node.getAttribute("start")),
+                         end: parseDateTimeFunction(node.getAttribute("end")),
+                 latestStart: parseDateTimeFunction(node.getAttribute("latestStart")),
+                 earliestEnd: parseDateTimeFunction(node.getAttribute("earliestEnd")),
+                     instant: instant,
+                        text: node.getAttribute("title"),
+                 description: description,
+                       image: this._resolveRelativeURL(node.getAttribute("image"), base),
+                        link: this._resolveRelativeURL(node.getAttribute("link") , base),
+                        icon: this._resolveRelativeURL(node.getAttribute("icon") , base),
+                       color: node.getAttribute("color"),
+                   textColor: node.getAttribute("textColor"),
+                   hoverText: node.getAttribute("hoverText"),
+                   classname: node.getAttribute("classname"),
+                   tapeImage: node.getAttribute("tapeImage"),
+                  tapeRepeat: node.getAttribute("tapeRepeat"),
+                     caption: node.getAttribute("caption"),
+                     eventID: node.getAttribute("eventID"),
+                    trackNum: node.getAttribute("trackNum")
+            });
+
             evt._node = node;
             evt.getProperty = function(name) {
                 return this._node.getAttribute(name);
@@ -81,27 +95,38 @@ Timeline.DefaultEventSource.prototype.loadJSON = function(data, url) {
     if (data && data.events){
         var wikiURL = ("wikiURL" in data) ? data.wikiURL : null;
         var wikiSection = ("wikiSection" in data) ? data.wikiSection : null;
-        var id = ("id" in data) ? data.id : (Math.floor(Math.random() * (1000000)));
         var dateTimeFormat = ("dateTimeFormat" in data) ? data.dateTimeFormat : null;
         var parseDateTimeFunction = this._events.getUnit().getParser(dateTimeFormat);
        
         for (var i=0; i < data.events.length; i++){
             var event = data.events[i];
-            var evt = new Timeline.DefaultEventSource.Event(
-            	event.id,
-                parseDateTimeFunction(event.start),
-                parseDateTimeFunction(event.end),
-                parseDateTimeFunction(event.latestStart),
-                parseDateTimeFunction(event.earliestEnd),
-                event.isDuration || false,
-                event.title,
-                event.description,
-                this._resolveRelativeURL(event.image, base),
-                this._resolveRelativeURL(event.link, base),
-                this._resolveRelativeURL(event.icon, base),
-                event.color,
-                event.textColor
-            );
+            // Fixing issue 33:
+            // instant event: default (for JSON only) is false. Or use values from isDuration or durationEvent
+            // isDuration was negated (see issue 33, so keep that interpretation
+            var instant = event.isDuration || (event.durationEvent != null && !event.durationEvent);
+
+            var evt = new Timeline.DefaultEventSource.Event({
+                          id: event.id,
+                       start: parseDateTimeFunction(event.start),
+                         end: parseDateTimeFunction(event.end),
+                 latestStart: parseDateTimeFunction(event.latestStart),
+                 earliestEnd: parseDateTimeFunction(event.earliestEnd),
+                     instant: instant,
+                        text: event.title,
+                 description: event.description,
+                       image: this._resolveRelativeURL(event.image, base),
+                        link: this._resolveRelativeURL(event.link , base),
+                        icon: this._resolveRelativeURL(event.icon , base),
+                       color: event.color,                                      
+                   textColor: event.textColor,
+                   hoverText: event.hoverText,
+                   classname: event.classname,
+                   tapeImage: event.tapeImage,
+                  tapeRepeat: event.tapeRepeat,
+                     caption: event.caption,
+                     eventID: event.eventID,
+                    trackNum: event.trackNum
+            });
             evt._obj = event;
             evt.getProperty = function(name) {
                 return this._obj[name];
@@ -168,21 +193,34 @@ Timeline.DefaultEventSource.prototype.loadSPARQL = function(xml, url) {
                 bindings["start"] = bindings["date"];
             }
             
-            var evt = new Timeline.DefaultEventSource.Event(
-            	bindings["id"],
-                parseDateTimeFunction(bindings["start"]),
-                parseDateTimeFunction(bindings["end"]),
-                parseDateTimeFunction(bindings["latestStart"]),
-                parseDateTimeFunction(bindings["earliestEnd"]),
-                bindings["isDuration"] != "true",
-                bindings["title"],
-                bindings["description"],
-                this._resolveRelativeURL(bindings["image"], base),
-                this._resolveRelativeURL(bindings["link"], base),
-                this._resolveRelativeURL(bindings["icon"], base),
-                bindings["color"],
-                bindings["textColor"]
-            );
+            // instant event: default is true. Or use values from isDuration or durationEvent
+            var instant = (bindings["isDuration"]    === null &&
+                           bindings["durationEvent"] === null) ||
+                          bindings["isDuration"] == "false" ||
+                          bindings["durationEvent"] == "false";
+
+            var evt = new Timeline.DefaultEventSource.Event({
+                          id: bindings["id"],
+                       start: parseDateTimeFunction(bindings["start"]),
+                         end: parseDateTimeFunction(bindings["end"]),
+                 latestStart: parseDateTimeFunction(bindings["latestStart"]),
+                 earliestEnd: parseDateTimeFunction(bindings["earliestEnd"]),
+                     instant: instant, // instant
+                        text: bindings["title"], // text
+                 description: bindings["description"],
+                       image: this._resolveRelativeURL(bindings["image"], base),
+                        link: this._resolveRelativeURL(bindings["link"] , base),
+                        icon: this._resolveRelativeURL(bindings["icon"] , base),
+                       color: bindings["color"],                                
+                   textColor: bindings["textColor"],
+                   hoverText: bindings["hoverText"],
+                     caption: bindings["caption"],
+                   classname: bindings["classname"],
+                   tapeImage: bindings["tapeImage"],
+                  tapeRepeat: bindings["tapeRepeat"],
+                     eventID: bindings["eventID"],
+                    trackNum: bindings["trackNum"]
+            });
             evt._bindings = bindings;
             evt.getProperty = function(name) {
                 return this._bindings[name];
@@ -217,8 +255,16 @@ Timeline.DefaultEventSource.prototype.clear = function() {
     this._fire("onClear", []);
 };
 
+Timeline.DefaultEventSource.prototype.getEvent = function(id) {
+    return this._events.getEvent(id);
+};
+
 Timeline.DefaultEventSource.prototype.getEventIterator = function(startDate, endDate) {
     return this._events.getIterator(startDate, endDate);
+};
+
+Timeline.DefaultEventSource.prototype.getEventReverseIterator = function(startDate, endDate) {
+    return this._events.getReverseIterator(startDate, endDate);
 };
 
 Timeline.DefaultEventSource.prototype.getAllEventIterator = function() {
@@ -244,7 +290,7 @@ Timeline.DefaultEventSource.prototype._fire = function(handlerName, args) {
             try {
                 listener[handlerName].apply(listener, args);
             } catch (e) {
-                Timeline.Debug.exception(e);
+                SimileAjax.Debug.exception(e);
             }
         }
     }
@@ -281,32 +327,100 @@ Timeline.DefaultEventSource.prototype._resolveRelativeURL = function(url, base) 
 };
 
 
-Timeline.DefaultEventSource.Event = function(idd,
-        start, end, latestStart, earliestEnd, instant, 
-        text, description, image, link,
-        icon, color, textColor) {
-        
-    this._id = idd;
+Timeline.DefaultEventSource.Event = function(args) {
+  //
+  // Attention developers!
+  // If you add a new event attribute, please be sure to add it to
+  // all three load functions: loadXML, loadSPARCL, loadJSON. 
+  // Thanks!
+  //
+  // args is a hash/object. It supports the following keys. Most are optional
+  //   id            -- an internal id. Really shouldn't be used by events.
+  //                    Timeline library clients should use eventID
+  //   eventID       -- For use by library client when writing custom painters or
+  //                    custom fillInfoBubble    
+  //   start
+  //   end
+  //   latestStart
+  //   earliestEnd
+  //   instant      -- boolean. Controls precise/non-precise logic & duration/instant issues
+  //   text         -- event source attribute 'title' -- used as the label on Timelines and in bubbles.
+  //   description  -- used in bubbles   
+  //   image        -- used in bubbles
+  //   link         -- used in bubbles
+  //   icon         -- on the Timeline
+  //   color        -- Timeline label and tape color
+  //   textColor    -- Timeline label color, overrides color attribute
+  //   hoverText    -- deprecated, here for backwards compatibility.
+  //                   Superceeded by caption
+  //   caption      -- tooltip-like caption on the Timeline. Uses HTML title attribute 
+  //   classname    -- used to set classname in Timeline. Enables better CSS selector rules
+  //   tapeImage    -- background image of the duration event's tape div on the Timeline
+  //   tapeRepeat   -- repeat attribute for tapeImage. {repeat | repeat-x | repeat-y }
+       
+  function cleanArg(arg) {
+      // clean up an arg
+      return (args[arg] != null && args[arg] != "") ? args[arg] : null;
+  }
+   
+  this._id = args.id;
+  
+  this._instant = args.instant || (args.end == null);
+  
+  this._start = args.start;
+  this._end = (args.end != null) ? args.end : args.start;
+  
+  this._latestStart = (args.latestStart != null) ?
+                       args.latestStart : (args.instant ? this._end : this._start);
+  this._earliestEnd = (args.earliestEnd != null) ? args.earliestEnd : this._end;
+  
+  // check sanity of dates since incorrect dates will later cause calculation errors
+  // when painting
+  var err=[];
+  if (this._start > this._latestStart) {
+          this._latestStart = this._start;
+          err.push("start is > latestStart");}
+  if (this._start > this._earliestEnd) {
+          this._earliestEnd = this._latestStart;
+          err.push("start is > earliestEnd");}
+  if (this._start > this._end) {
+          this._end = this._earliestEnd;
+          err.push("start is > end");}
+  if (this._latestStart > this._earliestEnd) {
+          this._earliestEnd = this._latestStart;
+          err.push("latestStart is > earliestEnd");}
+  if (this._latestStart > this._end) {
+          this._end = this._earliestEnd;
+          err.push("latestStart is > end");}
+  if (this._earliestEnd > this._end) {
+          this._end = this._earliestEnd;
+          err.push("earliestEnd is > end");}  
+  
+  this._eventID = cleanArg('eventID');
+  this._text = (args.text != null) ? SimileAjax.HTML.deEntify(args.text) : ""; // Change blank titles to ""
+  if (err.length > 0) {
+          this._text += " PROBLEM: " + err.join(", ");
+  }
+
+  this._description = SimileAjax.HTML.deEntify(args.description);
+  this._image = cleanArg('image');
+  this._link =  cleanArg('link');
+  this._title = cleanArg('hoverText');
+  this._title = cleanArg('caption');
+  
+  this._icon = cleanArg('icon');
+  this._color = cleanArg('color');      
+  this._textColor = cleanArg('textColor');
+  this._classname = cleanArg('classname');
+  this._tapeImage = cleanArg('tapeImage');
+  this._tapeRepeat = cleanArg('tapeRepeat');
+  this._trackNum = cleanArg('trackNum');
+  if (this._trackNum != null) {
+      this._trackNum = parseInt(this._trackNum);
+  }
     
-    this._instant = instant || (end == null);
-    
-    this._start = start;
-    this._end = (end != null) ? end : start;
-    
-    this._latestStart = (latestStart != null) ? latestStart : (instant ? this._end : this._start);
-    this._earliestEnd = (earliestEnd != null) ? earliestEnd : (instant ? this._start : this._end);
-    
-    this._text = Timeline.HTML.deEntify(text);
-    this._description = Timeline.HTML.deEntify(description);
-    this._image = (image != null && image != "") ? image : null;
-    this._link = (link != null && link != "") ? link : null;
-    
-    this._icon = (icon != null && icon != "") ? icon : null;
-    this._color = (color != null && color != "") ? color : null;
-    this._textColor = (textColor != null && textColor != "") ? textColor : null;
-    
-    this._wikiURL = null;
-    this._wikiSection = null;
+  this._wikiURL = null;
+  this._wikiSection = null;
 };
 
 Timeline.DefaultEventSource.Event.prototype = {
@@ -320,7 +434,8 @@ Timeline.DefaultEventSource.Event.prototype = {
     getLatestStart: function() { return this._latestStart; },
     getEarliestEnd: function() { return this._earliestEnd; },
     
-    getText:        function() { return this._text; },
+    getEventID:     function() { return this._eventID; },
+    getText:        function() { return this._text; }, // title
     getDescription: function() { return this._description; },
     getImage:       function() { return this._image; },
     getLink:        function() { return this._link; },
@@ -328,6 +443,10 @@ Timeline.DefaultEventSource.Event.prototype = {
     getIcon:        function() { return this._icon; },
     getColor:       function() { return this._color; },
     getTextColor:   function() { return this._textColor; },
+    getClassName:   function() { return this._classname; },
+    getTapeImage:   function() { return this._tapeImage; },
+    getTapeRepeat:  function() { return this._tapeRepeat; },
+    getTrackNum:    function() { return this._trackNum; },
     
     getProperty:    function(name) { return null; },
     
@@ -342,26 +461,40 @@ Timeline.DefaultEventSource.Event.prototype = {
         elmt.innerHTML = this._description;
     },
     fillWikiInfo: function(elmt) {
-        if (this._wikiURL != null && this._wikiSection != null) {
-            var wikiID = this.getProperty("wikiID");
-            if (wikiID == null || wikiID.length == 0) {
-                wikiID = this.getText();
-            }
-            wikiID = wikiID.replace(/\s/g, "_");
-            
-            var url = this._wikiURL + this._wikiSection.replace(/\s/g, "_") + "/" + wikiID;
-            var a = document.createElement("a");
-            a.href = url;
-            a.target = "new";
-            a.innerHTML = Timeline.strings[Timeline.Platform.clientLocale].wikiLinkLabel;
-            
-            elmt.appendChild(document.createTextNode("["));
-            elmt.appendChild(a);
-            elmt.appendChild(document.createTextNode("]"));
-        } else {
-            elmt.style.display = "none";
+        // Many bubbles will not support a wiki link. 
+        // 
+        // Strategy: assume no wiki link. If we do have
+        // enough parameters for one, then create it.
+        elmt.style.display = "none"; // default
+        
+        if (this._wikiURL == null || this._wikiSection == null) {
+          return; // EARLY RETURN
         }
+
+        // create the wikiID from the property or from the event text (the title)      
+        var wikiID = this.getProperty("wikiID");
+        if (wikiID == null || wikiID.length == 0) {
+            wikiID = this.getText(); // use the title as the backup wiki id
+        }
+        
+        if (wikiID == null || wikiID.length == 0) {
+          return; // No wikiID. Thus EARLY RETURN
+        }
+          
+        // ready to go...
+        elmt.style.display = "inline";
+        wikiID = wikiID.replace(/\s/g, "_");
+        var url = this._wikiURL + this._wikiSection.replace(/\s/g, "_") + "/" + wikiID;
+        var a = document.createElement("a");
+        a.href = url;
+        a.target = "new";
+        a.innerHTML = Timeline.strings[Timeline.clientLocale].wikiLinkLabel;
+        
+        elmt.appendChild(document.createTextNode("["));
+        elmt.appendChild(a);
+        elmt.appendChild(document.createTextNode("]"));
     },
+    
     fillTime: function(elmt, labeller) {
         if (this._instant) {
             if (this.isImprecise()) {
@@ -385,6 +518,7 @@ Timeline.DefaultEventSource.Event.prototype = {
             }
         }
     },
+    
     fillInfoBubble: function(elmt, theme, labeller) {
         var doc = elmt.ownerDocument;
         
@@ -429,3 +563,5 @@ Timeline.DefaultEventSource.Event.prototype = {
         elmt.appendChild(divWiki);
     }
 };
+
+

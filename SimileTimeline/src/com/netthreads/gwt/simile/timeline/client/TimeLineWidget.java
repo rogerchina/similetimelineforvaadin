@@ -40,6 +40,7 @@ public class TimeLineWidget extends Widget {
 	private ArrayList bandDecorators = null;
 	private TimeLine timeLine = null;
 	private Element divElement = null;
+	private boolean horizontalOrientation = true;
 
 	/**
 	 * Create timeline elements and assign renderer. The renderer must implement
@@ -68,8 +69,6 @@ public class TimeLineWidget extends Widget {
 		// ---------------------------------------------------------------
 		divElement = DOM.createDiv();
 		setElement(divElement);
-		setHeight("100%");
-		setWidth("100%");
 	}
 
 	/**
@@ -106,7 +105,7 @@ public class TimeLineWidget extends Widget {
 	 */
 	public void create() {
 		timeLine = TimeLine.create(bandInfos, eventSource, divElement,
-				getClientElement());
+				getClientElement(), horizontalOrientation);
 	}
 
 	/**
@@ -289,5 +288,13 @@ public class TimeLineWidget extends Widget {
 	 */
 	public void createEvent(String xmlText) {
 		eventSource.loadXMLText(xmlText);
+	}
+
+	public void setHorizontalOrientation(boolean horizontalOrientation) {
+		this.horizontalOrientation = horizontalOrientation;
+	}
+
+	public boolean isHorizontalOrientation() {
+		return horizontalOrientation;
 	}
 }

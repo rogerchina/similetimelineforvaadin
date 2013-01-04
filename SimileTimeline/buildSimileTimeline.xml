@@ -6,7 +6,7 @@
 	basedir="." 
 > 
 	
-	<property name="jarfile.path" value="${basedir}/release/jar"/>
+	<property name="jarfile.path" value="${basedir}/www"/>
 	<property name="build.dir" value="${basedir}/bin"/>
 	<property name="classes.dir" value="${build.dir}" />
 

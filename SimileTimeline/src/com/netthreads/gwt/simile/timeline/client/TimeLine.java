@@ -38,7 +38,7 @@ public class TimeLine extends JavaScriptObject
     /**
      * Create TimeLine object
      */
-    public static TimeLine create(List bands, EventSource source, Element divElement, Element clientElement)
+    public static TimeLine create(List bands, EventSource source, Element divElement, Element clientElement, boolean horizontalOrientation)
     {
     	JavaScriptObject[] bandArr = JavaScriptObjectHelper.listToArray(bands);
 
@@ -47,7 +47,7 @@ public class TimeLine extends JavaScriptObject
         boolean currVisible = UIObject.isVisible(clientElement);
         UIObject.setVisible(clientElement, true);
         
-        TimeLine timeLine = TimeLineImpl.create(jarr, divElement);
+        TimeLine timeLine = TimeLineImpl.create(jarr, divElement, horizontalOrientation ? 0 : 1);
 
         UIObject.setVisible(clientElement, currVisible);
         

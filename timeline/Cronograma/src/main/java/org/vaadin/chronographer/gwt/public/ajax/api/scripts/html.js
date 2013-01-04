@@ -3,11 +3,11 @@
  *==================================================
  */
 
-Timeline.HTML = new Object();
+SimileAjax.HTML = new Object();
 
-Timeline.HTML._e2uHash = {};
+SimileAjax.HTML._e2uHash = {};
 (function() {
-    e2uHash = Timeline.HTML._e2uHash;
+    var e2uHash = SimileAjax.HTML._e2uHash;
     e2uHash['nbsp']= '\u00A0[space]';
     e2uHash['iexcl']= '\u00A1';
     e2uHash['cent']= '\u00A2';
@@ -262,8 +262,8 @@ Timeline.HTML._e2uHash = {};
     e2uHash['diams']= '\u2666'; 
 })();
 
-Timeline.HTML.deEntify = function(s) {
-    e2uHash = Timeline.HTML._e2uHash;
+SimileAjax.HTML.deEntify = function(s) {
+    var e2uHash = SimileAjax.HTML._e2uHash;
     
     var re = /&(\w+?);/;
     while (re.test(s)) {
