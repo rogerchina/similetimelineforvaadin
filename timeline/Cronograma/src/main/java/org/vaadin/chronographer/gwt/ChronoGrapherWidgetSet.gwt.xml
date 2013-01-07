@@ -5,16 +5,15 @@
 	-->
  
 	<!-- Inherit DefaultWidgetSet -->
-	
     <inherits name="com.google.gwt.json.JSON" />
- 	<inherits name="com.netthreads.gwt.simile.timeline.Timeline" />
 	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" /> 
+	
 	
 	<!-- WidgetSet default theme -->	
 	<stylesheet src="css/timeline.css"/>
 	<stylesheet src="css/application.css"/>
 	<stylesheet src="js/api/bundle.css"/>
-		
+	
     <!--
      Uncomment the following to compile the widgetset for one browser only.
      This can reduce the GWT compilation time significantly when debugging.

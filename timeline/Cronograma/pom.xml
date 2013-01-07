@@ -26,7 +26,6 @@
         </configuration>
       </plugin>
 
-      
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
@@ -169,13 +168,13 @@
 	</plugin>
     </plugins>
     <resources>
-		<resource>
-			<directory>src/main/java</directory>
-		</resource>
-		<resource>
-			<directory>src/test/java</directory>
-		</resource>
-	</resources>
+      <resource>
+        <directory>src/main/java</directory>
+      </resource>
+      <resource>
+		<directory>src/test/java</directory>
+     </resource>
+    </resources>
   </build>
 
 	<repositories>
@@ -243,11 +242,6 @@
 		<groupId>com.google.code.gson</groupId>
 		<artifactId>gson</artifactId>
 		<version>2.1</version>
-	</dependency>
-	<dependency>
-		<groupId>com.netthreads</groupId>
-		<artifactId>gwt-simile-timeline</artifactId>
-		<version>2.3.0</version>
 	</dependency>
     <dependency>
       <groupId>javax.validation</groupId>
