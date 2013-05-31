@@ -53,7 +53,7 @@
  */
 
 (function() {
-    var useLocalResources = false;
+    var useLocalResources = true;
     if (document.location.search.length > 0) {
         var params = document.location.search.substr(1).split("&");
         for (var i = 0; i < params.length; i++) {
@@ -70,7 +70,7 @@
         
         window.Timeline = new Object();
         window.Timeline.DateTime = window.SimileAjax.DateTime; // for backward compatibility
-    
+        
         var bundle = false;
         var javascriptFiles = [
             "timeline.js",
@@ -146,15 +146,14 @@
                         parseURLParameters(Timeline_parameters);
                     }
                 } else {
-                	var body = document.documentElement.getElementsByTagName("body");
                     var heads = document.documentElement.getElementsByTagName("head");
-                    for (var h = 0; h < body.length; h++) {
-                        var scripts = body[h].getElementsByTagName("script");
-                        for (var s = 0; s < scripts.length; s++) {
-                            var url = scripts[s].src;
-                            var i = url.indexOf("timeline-api.js");
+                    for (var h = 0; h < heads.length; h++) {
+                        var links = heads[h].getElementsByTagName("link");
+                        for (var s = 0; s < links.length; s++) {
+                            var url = links[s].href;
+                            var i = url.indexOf("css/timeline.css");
                             if (i >= 0) {
-                                Timeline.urlPrefix = url.substr(0, i);
+                                Timeline.urlPrefix = url.substr(0, i)+"js/api/";
                                 var q = url.indexOf("?");
                                 if (q > 0) {
                                     parseURLParameters(url.substr(q + 1));
@@ -254,7 +253,7 @@
         window.SimileAjax_onLoad = loadMe;
         
         var url = useLocalResources ?
-            "http://127.0.0.1:9999/ajax/api/simile-ajax-api.js?bundle=false" :
+            "/VAADIN/widgetsets/org.vaadin.chronographer.gwt.ChronoGrapherWidgetSet/ajax/api/simile-ajax-api.js?bundle=false" :
             "http://static.simile.mit.edu/ajax/api-2.2.0/simile-ajax-api.js";
         if (typeof Timeline_ajax_url == "string") {
            url = Timeline_ajax_url;

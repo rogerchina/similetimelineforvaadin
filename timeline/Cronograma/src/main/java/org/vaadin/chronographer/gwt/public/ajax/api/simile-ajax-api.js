@@ -200,11 +200,11 @@ if (typeof SimileAjax == "undefined") {
         }
 
         SimileAjax.parseURLParameters(url, SimileAjax.params, {bundle:Boolean});
-        if (SimileAjax.params.bundle) {
+        //if (SimileAjax.params.bundle) {
             SimileAjax.includeJavascriptFiles(document, SimileAjax.urlPrefix, [ "simile-ajax-bundle.js" ]);
-        } else {
-            SimileAjax.includeJavascriptFiles(document, SimileAjax.urlPrefix + "scripts/", javascriptFiles);
-        }
+        //} else {
+        //    SimileAjax.includeJavascriptFiles(document, SimileAjax.urlPrefix + "scripts/", javascriptFiles);
+        //}
         SimileAjax.includeCssFiles(document, SimileAjax.urlPrefix + "styles/", cssFiles);
         
         SimileAjax.loaded = true;

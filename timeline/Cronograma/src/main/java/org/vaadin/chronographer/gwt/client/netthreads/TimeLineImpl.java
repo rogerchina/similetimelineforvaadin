@@ -16,6 +16,8 @@
 
 package org.vaadin.chronographer.gwt.client.netthreads;
 
+import org.vaadin.chronographer.gwt.client.TimeLineClickHandler;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Element;
 

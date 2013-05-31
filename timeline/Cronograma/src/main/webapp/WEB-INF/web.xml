@@ -8,11 +8,11 @@
     </context-param>
     <servlet>
         <servlet-name>Vaadin Application Servlet</servlet-name>
-        <servlet-class>org.vaadin.chronographer.ChronographerServlet</servlet-class>
+        <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
         <init-param>
             <description>Vaadin application class to start</description>
-            <param-name>application</param-name>
-            <param-value>org.vaadin.chronographer.TimelineApplication</param-value>
+            <param-name>UI</param-name>
+            <param-value>org.vaadin.chronographer.TimelineUI</param-value>
         </init-param>
         <init-param>
             <param-name>widgetset</param-name>

@@ -22,6 +22,8 @@ import com.google.gwt.user.client.ui.UIObject;
 
 import java.util.List;
 
+import org.vaadin.chronographer.gwt.client.TimeLineClickHandler;
+
 
 /**
  * TimeLine

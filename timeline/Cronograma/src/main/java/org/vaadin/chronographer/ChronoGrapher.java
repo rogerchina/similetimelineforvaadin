@@ -21,26 +21,23 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
-import org.vaadin.chronographer.gwt.client.ui.VChronoGrapher;
-import org.vaadin.chronographer.model.Events;
-import org.vaadin.chronographer.model.HighlighDecorator;
-import org.vaadin.chronographer.model.TimelineBandInfo;
-import org.vaadin.chronographer.model.TimelineEvent;
-import org.vaadin.chronographer.model.TimelineZone;
-import org.vaadin.chronographer.theme.TimelineTheme;
+import org.vaadin.chronographer.gwt.client.connect.ChronoGrapherServerRpc;
+import org.vaadin.chronographer.gwt.client.model.Events;
+import org.vaadin.chronographer.gwt.client.model.TimelineBandInfo;
+import org.vaadin.chronographer.gwt.client.model.TimelineEvent;
+import org.vaadin.chronographer.gwt.client.model.theme.TimelineTheme;
+import org.vaadin.chronographer.gwt.client.shared.ChronoGrapherState;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.AbstractField;
-import com.vaadin.ui.ClientWidget;
+import com.vaadin.annotations.JavaScript;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Notification;
 
 @SuppressWarnings("serial")
-@ClientWidget(VChronoGrapher.class)
-public class ChronoGrapher extends AbstractField {
+@JavaScript(value = { "gwt/public/js/api/timeline-api.js" })
+public class ChronoGrapher extends AbstractComponent {
     private transient DateFormat df = new SimpleDateFormat(
             "EEE MMM dd yyyy HH:mm:ss Z", Locale.US);
 
@@ -48,224 +45,107 @@ public class ChronoGrapher extends AbstractField {
     private final Events timelineEvents;
     private final List<TimelineTheme> timelineThemes;
 
-    private boolean eventsChanged = false;
-    private boolean structureChanged = false;
-    private boolean themeChanged = false;
+    private String width = "100%";
+    private String height = "100%";
 
-    private String width = "";
-    private String height = "";
+    private boolean stateDirty;
 
     public ChronoGrapher() {
         super();
         bandInfos = new ArrayList<TimelineBandInfo>();
         timelineThemes = new ArrayList<TimelineTheme>();
         timelineEvents = new Events();
+
+        registerRpc(new ChronoGrapherServerRpc() {
+            @Override
+            public void onClick(int id, int x, int y) {
+                Notification.show("Event " + id + " clicked @ (" + x + "," + y
+                        + ")");
+            }
+        });
     }
 
     public void addBandInfo(TimelineBandInfo bandInfo) {
         bandInfos.add(bandInfo);
-        structureChanged = true;
+
+        getState().width = width;
+        getState().height = height;
+        getState().bandInfos = bandInfos;
+        System.out.println("..structure");
     }
 
-    public void addEvent(TimelineEvent event) {
+    public void addTheme(TimelineTheme theme) {
+        timelineThemes.add(theme);
+        getState().timelineThemes = timelineThemes;
+        System.out.println("...theme");
+        drawChronoGrapher();
+    }
+
+    public void addEvent(TimelineEvent event, boolean redraw) {
         timelineEvents.add(event);
-        eventsChanged = true;
+        getState().eventsJson = paintEventsOnJSON();
+        System.out.println("...events");
+        if (redraw) {
+            drawChronoGrapher();
+        }
     }
 
     public void addEvents(TimelineEvent... events) {
         for (TimelineEvent e : events) {
             timelineEvents.add(e);
         }
-        eventsChanged = true;
-        requestRepaint();
+        getState().eventsJson = paintEventsOnJSON();
+        System.out.println("...events");
+        drawChronoGrapher();
     }
 
     public void addEvents(List<TimelineEvent> events) {
         for (TimelineEvent e : events) {
             timelineEvents.add(e);
         }
-        eventsChanged = true;
-        requestRepaint();
+        getState().eventsJson = paintEventsOnJSON();
+        System.out.println("...events");
+        drawChronoGrapher();
     }
 
     public void clearBandInfos() {
         bandInfos.clear();
-        structureChanged = true;
+        getState().bandInfos = null;
+        drawChronoGrapher();
     }
 
     public void clearEvents() {
         timelineEvents.clear();
-        eventsChanged = true;
+        getState().eventsJson = null;
+        drawChronoGrapher();
     }
 
-    /** The property value of the field is a String. */
+    public void drawChronoGrapher() {
+        stateDirty = true;
+        beforeClientResponse(false);
+    }
+
     @Override
-    public Class<?> getType() {
-        return String.class;
+    public ChronoGrapherState getState() {
+        return (ChronoGrapherState) super.getState();
     }
 
-    /** Paint (serialize) the component for the client. */
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        System.out.println("Cronograma.paintContent");
-        super.paintContent(target);
-        if (structureChanged) {
-            target.addAttribute("width", width);
-            target.addAttribute("height", height);
-            paintBandInfosAndZones(target);
-            structureChanged = false;
-            System.out.println("..structure");
-        }
-        if (eventsChanged) {
-            paintEventsOnJSON(target);
-            eventsChanged = false;
-            System.out.println("...events");
-        }
-        if (themeChanged && timelineThemes != null && timelineThemes.size() > 0) {
-            paintThemesOnJSON(target);
-            themeChanged = false;
-            System.out.println("...theme");
-        }
-    }
-
-    private void paintBandInfosAndZones(PaintTarget target)
-            throws PaintException {
-        target.addAttribute("horizontal", true);
-
-        target.startTag("infos");
-        for (TimelineBandInfo info : bandInfos) {
-            target.startTag("b");
-            if (info.getWidth() != null) {
-                target.addAttribute("width", info.getWidth());
-            }
-            if (info.getHighligh() != null) {
-                target.addAttribute("highligh", info.getHighligh());
-            }
-            if (info.getOverview() != null) {
-                target.addAttribute("overview", info.getOverview());
-            }
-            if (info.getIntervalPixels() != null) {
-                target.addAttribute("intervalPixels", info.getIntervalPixels());
-            }
-            if (info.getTimeZone() != null) {
-                target.addAttribute("timeZone", info.getTimeZone());
-            }
-            if (info.getIntervalUnit() != null) {
-                target.addAttribute("intervalUnit", info.getIntervalUnit()
-                        .ordinal());
-            }
-            if (info.getSyncWith() != null) {
-                target.addAttribute("syncWith", info.getSyncWith());
-            }
-            if (info.getDate() != null) {
-                target.addAttribute("date", df.format(info.getDate()));
-            }
-            if (info.getShowEventText() != null) {
-                target.addAttribute("showEventText", info.getShowEventText());
-            }
-            if (info.getIntervalPixels() != null) {
-                target.addAttribute("intervalPixels", info.getIntervalPixels()
-                        .intValue());
-            }
-            if (info.getIntervalUnit() != null) {
-                target.addAttribute("intervalUnit", info.getIntervalUnit()
-                        .ordinal());
-            }
-            if (info.getTrackGap() != null) {
-                target.addAttribute("trackGap", info.getTrackGap().intValue());
-            }
-            if (info.getTrackHeight() != null) {
-                target.addAttribute("trackHeight", info.getTrackHeight()
-                        .intValue());
-            }
-            for (TimelineZone zone : info.getTimelineZones()) {
-                paintZone(target, zone);
-            }
-            for (HighlighDecorator decorator : info.getHighlightDecorators()) {
-                paintDecorator(target, decorator);
-            }
-            target.endTag("b");
-        }
-        target.endTag("infos");
-    }
-
-    private void paintZone(PaintTarget target, TimelineZone zone)
-            throws PaintException {
-        target.startTag("z");
-        if (zone.getStart() != null) {
-            target.addAttribute("start", df.format(zone.getStart()));
-        }
-        if (zone.getEnd() != null) {
-            target.addAttribute("end", df.format(zone.getEnd()));
-        }
-        if (zone.getMagnify() != null) {
-            target.addAttribute("magnify", zone.getMagnify().intValue());
-        }
-        if (zone.getMultiple() != null) {
-            target.addAttribute("multiple", zone.getMultiple().intValue());
-        }
-        if (zone.getUnit() != null) {
-            target.addAttribute("unit", zone.getUnit().ordinal());
-        }
-        target.endTag("z");
-    }
-
-    private void paintDecorator(PaintTarget target, HighlighDecorator decorator)
-            throws PaintException {
-        target.startTag("d");
-        if (decorator.getStartDate() != null) {
-            target.addAttribute("startDate",
-                    df.format(decorator.getStartDate()));
-        }
-        if (decorator.getEndDate() != null) {
-            target.addAttribute("endDate", df.format(decorator.getEndDate()));
-        }
-        if (decorator.getStartLabel() != null) {
-            target.addAttribute("startLabel", decorator.getStartLabel());
-        }
-        if (decorator.getEndLabel() != null) {
-            target.addAttribute("endLabel", decorator.getEndLabel());
-        }
-        if (decorator.getDate() != null) {
-            target.addAttribute("date", df.format(decorator.getDate()));
-        }
-        if (decorator.getColor() != null) {
-            target.addAttribute("color", decorator.getColor());
-        }
-        if (decorator.getOpacity() != null) {
-            target.addAttribute("opacity", decorator.getOpacity());
-        }
-        target.endTag("d");
-
-    }
-
-    private void paintEventsOnJSON(PaintTarget target) throws PaintException {
+    private String paintBandInfosAndZones() {
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
         Gson gson = builder.create();
-        target.addAttribute("jsonevents", gson.toJson(timelineEvents));
+        return gson.toJson(bandInfos);
     }
 
-    private void paintThemesOnJSON(PaintTarget target) throws PaintException {
+    private String paintEventsOnJSON() {
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
         Gson gson = builder.create();
-        System.out.println(gson.toJson(timelineThemes));
-        target.addAttribute("theme", gson.toJson(timelineThemes));
+        return gson.toJson(timelineEvents);
     }
 
-    /** Deserialize changes received from client. */
-    @Override
-    public void changeVariables(Object source, Map variables) {
-        if (variables.containsKey("onclick")) {
-            Object[] params = (Object[]) variables.get("onclick");
-            getWindow().showNotification(
-                    "Event " + params[0] + " clicked @ (" + params[1] + ","
-                            + params[2] + ")");
-        }
-    }
-
-    public void addTheme(TimelineTheme theme) {
-        timelineThemes.add(theme);
-        themeChanged = true;
+    private String paintThemesOnJSON() {
+        GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
+        Gson gson = builder.create();
+        return gson.toJson(timelineThemes);
     }
 
     public void setDateFormatter(DateFormat df) {
@@ -287,5 +167,4 @@ public class ChronoGrapher extends AbstractField {
         this.height = height;
         super.setHeight(height);
     }
-
 }
