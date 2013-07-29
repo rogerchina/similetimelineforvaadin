@@ -237,6 +237,9 @@ public class ChronoGrapherWidget extends TimeLineWidget implements
         if (bi.getWidth() != null) {
             options.setWidth(bi.getWidth());
         }
+        if (bi.getOverview() != null) {
+            options.setOverview(bi.getOverview());
+        }
         return options;
     }
 

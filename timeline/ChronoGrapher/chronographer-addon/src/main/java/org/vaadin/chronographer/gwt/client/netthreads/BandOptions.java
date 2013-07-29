@@ -185,6 +185,15 @@ public class BandOptions extends JavaScriptObject {
     }
 
     /**
+     * optional, set overview property
+     * 
+     * @param overview
+     */
+    public final void setOverview(boolean value) {
+        JavaScriptObjectHelper.setAttribute(this, "overview", value);
+    }
+
+    /**
      * optional, set hot zones
      */
     public final void setZones(List zones) {
@@ -196,5 +205,4 @@ public class BandOptions extends JavaScriptObject {
 
         JavaScriptObjectHelper.setAttribute(this, "zones", jarr);
     }
-
 }

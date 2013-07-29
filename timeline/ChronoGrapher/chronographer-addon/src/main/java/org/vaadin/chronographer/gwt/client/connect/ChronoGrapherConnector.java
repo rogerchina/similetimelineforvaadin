@@ -55,7 +55,7 @@ public class ChronoGrapherConnector extends AbstractComponentConnector {
                     getState().initialized = true;
                     return false;
                 }
-            }, 3500);
+            }, 1500);
         }
     }
 }
