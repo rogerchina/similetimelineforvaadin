@@ -26,11 +26,14 @@ import org.vaadin.chronographer.gwt.client.model.theme.event.EventsTheme;
 import org.vaadin.chronographer.gwt.client.model.theme.event.Instant;
 import org.vaadin.chronographer.gwt.client.model.theme.event.Label;
 
+import com.vaadin.annotations.StyleSheet;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 
+@StyleSheet("complexTimeLineDarkTheme.css")
 public class ComplexTimeLineExample extends VerticalLayout {
     private ChronoGrapher timeline;
 
@@ -75,6 +78,9 @@ public class ComplexTimeLineExample extends VerticalLayout {
             infoLabel.setId("timeline-ex-2-infolabel");
             addComponent(infoLabel);
 
+            HorizontalLayout buttons = new HorizontalLayout();
+            addComponent(buttons);
+            
             Button loadButton = new Button("Load Events",
                     new Button.ClickListener() {
                         @Override
@@ -87,7 +93,20 @@ public class ComplexTimeLineExample extends VerticalLayout {
                         }
                     });
             loadButton.setId("timeline-ex-2-loadButton");
-            addComponent(loadButton);
+            buttons.addComponent(loadButton);
+            
+            Button switchThemeButton = new Button("Switch theme",
+                    new Button.ClickListener() {
+                        @Override
+                        public void buttonClick(ClickEvent event) {
+                        	if(timeline.getStyleName().contains("dark-theme")){
+                        		timeline.setStyleName("");
+                        	}else{
+                        		timeline.setStyleName("dark-theme");
+                        	}
+                        }
+                    });
+            buttons.addComponent(switchThemeButton);
 
             addComponent(timeline);
             timeline.setId("timeline-widget");
