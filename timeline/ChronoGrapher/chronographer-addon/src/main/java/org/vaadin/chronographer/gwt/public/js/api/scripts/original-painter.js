@@ -274,6 +274,12 @@ Timeline.OriginalEventPainter.prototype.paintPreciseInstantEvent = function(evt,
     SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mousedown", clickHandler);
     SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mousedown", clickHandler);
     
+    var mouseOverHandler = function(elmt, domEvt, target) {
+        return self._onMouseOverInstantEvent(iconElmtData.elmt, domEvt, evt);
+    };
+    SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mouseover", mouseOverHandler);
+    // SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mouseover", mouseOverHandler);
+    
     var hDiv = this._createHighlightDiv(highlightIndex, iconElmtData, theme, evt);
     if (hDiv != null) {els.push(hDiv);}
     this._fireEventPaintListeners('paintedEvent', evt, els);
@@ -324,6 +330,13 @@ Timeline.OriginalEventPainter.prototype.paintImpreciseInstantEvent = function(ev
     SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mousedown", clickHandler);
     SimileAjax.DOM.registerEvent(tapeElmtData.elmt, "mousedown", clickHandler);
     SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mousedown", clickHandler);
+    
+    var mouseOverHandler = function(elmt, domEvt, target) {
+        return self._onMouseOverInstantEvent(iconElmtData.elmt, domEvt, evt);
+    };
+    SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mouseover", mouseOverHandler);
+    SimileAjax.DOM.registerEvent(tapeElmtData.elmt, "mouseover", mouseOverHandler);
+    //SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mouseover", mouseOverHandler);
     
     var hDiv = this._createHighlightDiv(highlightIndex, iconElmtData, theme, evt);
     if (hDiv != null) {els.push(hDiv);}
@@ -612,7 +625,7 @@ Timeline.OriginalEventPainter.prototype._createHighlightDiv = function(highlight
     return div;
 };
 
-Timeline.OriginalEventPainter.prototype._onClickInstantEvent = function(icon, domEvt, evt) {
+Timeline.OriginalEventPainter.prototype._onMouseOverInstantEvent = function(icon, domEvt, evt) {
     var c = SimileAjax.DOM.getPageCoordinates(icon);
     this._showBubble(
         c.left + Math.ceil(icon.offsetWidth / 2), 
@@ -622,6 +635,14 @@ Timeline.OriginalEventPainter.prototype._onClickInstantEvent = function(icon, do
     this._fireOnSelect(evt.getID());
     
     domEvt.cancelBubble = true;
+    SimileAjax.DOM.cancelEvent(domEvt);
+    return false;
+};
+
+Timeline.OriginalEventPainter.prototype._onClickInstantEvent = function(icon, domEvt, evt) {
+
+	ChronoGrpaher.onEventClick(evt._obj.id,evt._obj.title);
+
     SimileAjax.DOM.cancelEvent(domEvt);
     return false;
 };

@@ -13,6 +13,7 @@ import org.vaadin.chronographer.gwt.client.model.TimelineEvent;
 import org.vaadin.chronographer.gwt.client.model.TimelineZone;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 
 public class SimpleTimelineExample extends VerticalLayout {
@@ -44,6 +45,12 @@ public class SimpleTimelineExample extends VerticalLayout {
 
     private Component getTimelineComponent() throws ParseException {
         timeline = new ChronoGrapher();
+        timeline.setEventClickHandler(new ChronoGrapher.EventClickHandler() {
+			@Override
+			public void handleClick(String eventId, String eventTitle) {
+				Notification.show(String.format("Event with id #%s and title '%s' is clicked !", eventId, eventTitle));
+			}
+		});
         timeline.setId("timeline-ex1-timelinewidget");
         timeline.setImmediate(true);
         timeline.setWidth("100%");

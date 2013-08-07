@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.vaadin.chronographer.gwt.client.connect.ChronoGrapherServerRpc;
 import org.vaadin.chronographer.gwt.client.model.Events;
 import org.vaadin.chronographer.gwt.client.model.TimelineBandInfo;
@@ -33,6 +35,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.JavaScriptFunction;
 import com.vaadin.ui.Notification;
 
 @SuppressWarnings("serial")
@@ -49,6 +52,8 @@ public class ChronoGrapher extends AbstractComponent {
     private String height = "100%";
 
     private boolean stateDirty;
+    
+	private EventClickHandler eventClickHandler;
 
     public ChronoGrapher() {
         super();
@@ -61,7 +66,19 @@ public class ChronoGrapher extends AbstractComponent {
             public void onClick(int id, int x, int y) {
                 Notification.show("Event " + id + " clicked @ (" + x + "," + y
                         + ")");
-            }
+			}
+		});
+
+		com.vaadin.ui.JavaScript.getCurrent().addFunction(
+				"ChronoGrpaher.onEventClick", new JavaScriptFunction() {
+					@Override
+					public void call(JSONArray arguments) throws JSONException {
+						if (eventClickHandler != null) {
+							eventClickHandler.handleClick(
+									arguments.getString(0),
+									arguments.getString(1));
+						}
+					}
         });
     }
 
@@ -167,4 +184,23 @@ public class ChronoGrapher extends AbstractComponent {
         this.height = height;
         super.setHeight(height);
     }
+    
+	/**
+	 * Sets event click handler which executes on event click
+	 * 
+	 * @param eventClickHandler
+	 */
+	public void setEventClickHandler(EventClickHandler eventClickHandler) {
+		this.eventClickHandler = eventClickHandler;
+	}
+	
+	/**
+	 * This interface describes which parameters will be received from the event
+	 * click request
+	 * 
+	 * @author ivan.obradovic@codecentric.de
+	 */
+	public interface EventClickHandler {
+		public void handleClick(String eventId, String eventTitle);
+	}
 }

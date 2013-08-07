@@ -28,6 +28,7 @@ import org.vaadin.chronographer.gwt.client.model.theme.event.Label;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 
 public class ComplexTimeLineExample extends VerticalLayout {
@@ -51,6 +52,12 @@ public class ComplexTimeLineExample extends VerticalLayout {
         super.attach();
         if (timeline == null) {
             timeline = new ChronoGrapher();
+            timeline.setEventClickHandler(new ChronoGrapher.EventClickHandler() {
+    			@Override
+    			public void handleClick(String eventId, String eventTitle) {
+    				Notification.show(String.format("Event with id #%s and title '%s' is clicked !", eventId, eventTitle));
+    			}
+    		});
 
             df2.setTimeZone(TimeZone.getTimeZone("GMT-0600"));
             df3.setTimeZone(TimeZone.getTimeZone("GMT-0600"));
