@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -12,7 +11,6 @@ import java.util.TimeZone;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
-import nu.xom.ParsingException;
 
 import org.vaadin.chronographer.ChronoGrapher;
 import org.vaadin.chronographer.gwt.client.model.HighlighDecorator;
@@ -30,7 +28,6 @@ import com.vaadin.annotations.StyleSheet;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 
 @StyleSheet("complexTimeLineDarkTheme.css")
@@ -55,12 +52,15 @@ public class ComplexTimeLineExample extends VerticalLayout {
         super.attach();
         if (timeline == null) {
             timeline = new ChronoGrapher();
-            timeline.setEventClickHandler(new ChronoGrapher.EventClickHandler() {
-    			@Override
-    			public void handleClick(String eventId, String eventTitle) {
-    				Notification.show(String.format("Event with id #%s and title '%s' is clicked !", eventId, eventTitle));
-    			}
-    		});
+            // we need to set true in ChronoGrapher constructor to enable this feature
+			// timeline.setEventClickHandler(new
+			// ChronoGrapher.EventClickHandler() {
+			// @Override
+			// public void handleClick(String eventId, String eventTitle) {
+			// Notification.show(String.format("Event with id #%s and title '%s' is clicked !",
+			// eventId, eventTitle));
+			// }
+			// });
 
             df2.setTimeZone(TimeZone.getTimeZone("GMT-0600"));
             df3.setTimeZone(TimeZone.getTimeZone("GMT-0600"));

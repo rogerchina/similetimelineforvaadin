@@ -44,7 +44,7 @@ public class SimpleTimelineExample extends VerticalLayout {
     }
 
     private Component getTimelineComponent() throws ParseException {
-        timeline = new ChronoGrapher();
+        timeline = new ChronoGrapher(true);
         timeline.setEventClickHandler(new ChronoGrapher.EventClickHandler() {
 			@Override
 			public void handleClick(String eventId, String eventTitle) {
