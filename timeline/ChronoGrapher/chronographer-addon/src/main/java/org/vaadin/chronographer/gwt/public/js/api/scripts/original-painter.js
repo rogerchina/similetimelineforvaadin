@@ -268,17 +268,23 @@ Timeline.OriginalEventPainter.prototype.paintPreciseInstantEvent = function(evt,
     var els = [iconElmtData.elmt, labelElmtData.elmt];
 
     var self = this;
-    var clickHandler = function(elmt, domEvt, target) {
-        return self._onClickInstantEvent(iconElmtData.elmt, domEvt, evt);
-    };
-    SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mousedown", clickHandler);
-    SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mousedown", clickHandler);
-    
     var mouseOverHandler = function(elmt, domEvt, target) {
-        return self._onMouseOverInstantEvent(iconElmtData.elmt, domEvt, evt);
-    };
-    SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mouseover", mouseOverHandler);
-    // SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mouseover", mouseOverHandler);
+		return self._onMouseOverInstantEvent(iconElmtData.elmt, domEvt, evt);
+	};
+    if( this._timeline._serverCallOnEventClickEnabled ) {
+    	var clickHandler = function(elmt, domEvt, target) {
+            return self._onClickInstantEvent(iconElmtData.elmt, domEvt, evt);
+        };
+        
+    	SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mousedown", clickHandler);
+    	SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mousedown", clickHandler);
+    
+    	SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mouseover", mouseOverHandler);
+    	// SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mouseover", mouseOverHandler);
+    } else {
+    	SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mousedown", mouseOverHandler);
+    	SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mousedown", mouseOverHandler);
+    }
     
     var hDiv = this._createHighlightDiv(highlightIndex, iconElmtData, theme, evt);
     if (hDiv != null) {els.push(hDiv);}
@@ -324,19 +330,25 @@ Timeline.OriginalEventPainter.prototype.paintImpreciseInstantEvent = function(ev
     var els = [iconElmtData.elmt, labelElmtData.elmt, tapeElmtData.elmt];    
     
     var self = this;
-    var clickHandler = function(elmt, domEvt, target) {
-        return self._onClickInstantEvent(iconElmtData.elmt, domEvt, evt);
-    };
-    SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mousedown", clickHandler);
-    SimileAjax.DOM.registerEvent(tapeElmtData.elmt, "mousedown", clickHandler);
-    SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mousedown", clickHandler);
-    
     var mouseOverHandler = function(elmt, domEvt, target) {
         return self._onMouseOverInstantEvent(iconElmtData.elmt, domEvt, evt);
     };
-    SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mouseover", mouseOverHandler);
-    SimileAjax.DOM.registerEvent(tapeElmtData.elmt, "mouseover", mouseOverHandler);
-    //SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mouseover", mouseOverHandler);
+    if( this._timeline._serverCallOnEventClickEnabled ) {
+    	var clickHandler = function(elmt, domEvt, target) {
+            return self._onClickInstantEvent(iconElmtData.elmt, domEvt, evt);
+        };
+        SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mousedown", clickHandler);
+        SimileAjax.DOM.registerEvent(tapeElmtData.elmt, "mousedown", clickHandler);
+        SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mousedown", clickHandler);
+        
+        SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mouseover", mouseOverHandler);
+        SimileAjax.DOM.registerEvent(tapeElmtData.elmt, "mouseover", mouseOverHandler);
+        //SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mouseover", mouseOverHandler);
+    } else {
+    	SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mousedown", mouseOverHandler);
+        SimileAjax.DOM.registerEvent(tapeElmtData.elmt, "mousedown", mouseOverHandler);
+        SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mousedown", mouseOverHandler);
+    }
     
     var hDiv = this._createHighlightDiv(highlightIndex, iconElmtData, theme, evt);
     if (hDiv != null) {els.push(hDiv);}
@@ -640,7 +652,6 @@ Timeline.OriginalEventPainter.prototype._onMouseOverInstantEvent = function(icon
 };
 
 Timeline.OriginalEventPainter.prototype._onClickInstantEvent = function(icon, domEvt, evt) {
-
 	ChronoGrpaher.onEventClick(evt._obj.id,evt._obj.title);
 
     SimileAjax.DOM.cancelEvent(domEvt);

@@ -10,6 +10,8 @@ import com.vaadin.shared.AbstractComponentState;
 public class ChronoGrapherState extends AbstractComponentState {
 
     public boolean horizontal = true;
+    
+    public boolean serverCallOnEventClickEnabled = false;
 
     public List<TimelineBandInfo> bandInfos;
     public List<TimelineTheme> timelineThemes;

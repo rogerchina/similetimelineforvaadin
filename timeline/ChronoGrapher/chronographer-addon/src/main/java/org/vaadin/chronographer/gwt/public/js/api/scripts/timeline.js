@@ -48,7 +48,7 @@ Timeline.getDefaultLocale = function() {
     return Timeline.clientLocale;
 };
 
-Timeline.create = function(elmt, bandInfos, orientation, unit) {
+Timeline.create = function(elmt, bandInfos, orientation, unit, serverCallOnEventClickEnabled) {
     if (Timeline.timelines == null) {
         Timeline.timelines = [];
         // Timeline.timelines array can have null members--Timelines that
@@ -57,7 +57,7 @@ Timeline.create = function(elmt, bandInfos, orientation, unit) {
     
     var timelineID = Timeline.timelines.length;
     Timeline.timelines[timelineID] = null; // placeholder until we have the object
-    var new_tl = new Timeline._Impl(elmt, bandInfos, orientation, unit,
+    var new_tl = new Timeline._Impl(elmt, bandInfos, orientation, unit, serverCallOnEventClickEnabled,
       timelineID);
     Timeline.timelines[timelineID] = new_tl;    
     return new_tl;
@@ -247,13 +247,14 @@ Timeline.writeVersion = function(el_id) {
  *  Timeline Implementation object
  *==================================================
  */
-Timeline._Impl = function(elmt, bandInfos, orientation, unit, timelineID) {
+Timeline._Impl = function(elmt, bandInfos, orientation, unit, serverCallOnEventClickEnabled, timelineID) {
     SimileAjax.WindowManager.initialize();
     
     this._containerDiv = elmt;
     
     this._bandInfos = bandInfos;
     this._orientation = orientation == null ? Timeline.HORIZONTAL : orientation;
+    this._serverCallOnEventClickEnabled = serverCallOnEventClickEnabled == null ? false : serverCallOnEventClickEnabled;
     this._unit = (unit != null) ? unit : SimileAjax.NativeDateUnit;
     this._starting = true; // is the Timeline being created? Used by autoWidth
                            // functions
@@ -336,6 +337,10 @@ Timeline._Impl.prototype.isHorizontal = function() {
 
 Timeline._Impl.prototype.isVertical = function() {
     return this._orientation == Timeline.VERTICAL;
+};
+
+Timeline._Impl.prototype.isServerCallOnEventClickEnabled = function() {
+    return this._serverCallOnEventClickEnabled;
 };
 
 Timeline._Impl.prototype.getPixelLength = function() {

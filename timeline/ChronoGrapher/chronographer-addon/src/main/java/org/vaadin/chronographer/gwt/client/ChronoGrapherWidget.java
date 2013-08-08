@@ -55,7 +55,7 @@ public class ChronoGrapherWidget extends TimeLineWidget implements
         setStyleName(CLASSNAME);
     }
 
-    public void init(String w, String h, boolean horizontal,
+    public void init(String w, String h, boolean horizontal, boolean serverCallOnEventClickEnabled,
             List<TimelineBandInfo> bandInfos,
             List<TimelineTheme> timelineThemes, String eventsJson) {
         if (!inited) {
@@ -63,6 +63,7 @@ public class ChronoGrapherWidget extends TimeLineWidget implements
 
             Window.addResizeHandler(this);
             setHorizontalOrientation(horizontal);
+            setServerCallOnEventClickEnabled(serverCallOnEventClickEnabled);
 
             Theme theme = Theme.create();
             setStructure(bandInfos, theme);

@@ -40,7 +40,7 @@ public class TimeLine extends JavaScriptObject
     /**
      * Create TimeLine object
      */
-    public static TimeLine create(List bands, EventSource source, Element divElement, Element clientElement, boolean horizontalOrientation)
+    public static TimeLine create(List bands, EventSource source, Element divElement, Element clientElement, boolean horizontalOrientation, boolean serverCallOnEventClickEnabled)
     {
     	JavaScriptObject[] bandArr = JavaScriptObjectHelper.listToArray(bands);
 
@@ -49,7 +49,7 @@ public class TimeLine extends JavaScriptObject
         boolean currVisible = UIObject.isVisible(clientElement);
         UIObject.setVisible(clientElement, true);
         
-        TimeLine timeLine = TimeLineImpl.create(jarr, divElement, horizontalOrientation ? 0 : 1);
+        TimeLine timeLine = TimeLineImpl.create(jarr, divElement, horizontalOrientation ? 0 : 1, serverCallOnEventClickEnabled);
 
         UIObject.setVisible(clientElement, currVisible);
         

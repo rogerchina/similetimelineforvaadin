@@ -50,7 +50,7 @@ public class ChronoGrapherConnector extends AbstractComponentConnector {
                 @Override
                 public boolean execute() {
                     getWidget().init(getState().width, getState().height,
-                            getState().horizontal, getState().bandInfos,
+                            getState().horizontal, getState().serverCallOnEventClickEnabled, getState().bandInfos,
                             getState().timelineThemes, getState().eventsJson);
                     getState().initialized = true;
                     return false;

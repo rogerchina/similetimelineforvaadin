@@ -55,7 +55,13 @@ public class ChronoGrapher extends AbstractComponent {
     
 	private EventClickHandler eventClickHandler;
 
-    public ChronoGrapher() {
+	/**
+	 * @param serverCallOnEventClickEnabled
+	 *            if value is true server call on event click feature will be
+	 *            enabled, otherwise the component will have default behavior
+	 *            (optional parameter)
+	 */
+    public ChronoGrapher(boolean... serverCallOnEventClickEnabled) {
         super();
         bandInfos = new ArrayList<TimelineBandInfo>();
         timelineThemes = new ArrayList<TimelineTheme>();
@@ -69,17 +75,22 @@ public class ChronoGrapher extends AbstractComponent {
 			}
 		});
 
-		com.vaadin.ui.JavaScript.getCurrent().addFunction(
-				"ChronoGrpaher.onEventClick", new JavaScriptFunction() {
-					@Override
-					public void call(JSONArray arguments) throws JSONException {
-						if (eventClickHandler != null) {
-							eventClickHandler.handleClick(
-									arguments.getString(0),
-									arguments.getString(1));
+		if (serverCallOnEventClickEnabled != null
+				&& serverCallOnEventClickEnabled.length > 0) {
+			getState().serverCallOnEventClickEnabled = serverCallOnEventClickEnabled[0];
+			
+			com.vaadin.ui.JavaScript.getCurrent().addFunction(
+					"ChronoGrpaher.onEventClick", new JavaScriptFunction() {
+						@Override
+						public void call(JSONArray arguments) throws JSONException {
+							if (eventClickHandler != null) {
+								eventClickHandler.handleClick(
+										arguments.getString(0),
+										arguments.getString(1));
+							}
 						}
-					}
-        });
+	        });
+		}
     }
 
     public void addBandInfo(TimelineBandInfo bandInfo) {

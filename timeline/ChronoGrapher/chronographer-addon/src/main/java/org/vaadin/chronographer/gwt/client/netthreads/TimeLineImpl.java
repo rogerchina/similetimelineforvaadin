@@ -35,8 +35,8 @@ class TimeLineImpl {
     private static TimeLineClickHandler listener;
 
     public native static TimeLine create(JavaScriptObject bands,
-            Element divElement, int orientation) /*-{
-                                                 return $wnd.Timeline.create(divElement, bands, orientation);
+            Element divElement, int orientation, boolean serverCallOnEventClickEnabled) /*-{
+                                                 return $wnd.Timeline.create(divElement, bands, orientation, null, serverCallOnEventClickEnabled)
                                                  }-*/;
 
     public native static void loadXML(String dataUrl, TimelineXMLHandler handler) /*-{

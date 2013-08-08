@@ -41,6 +41,7 @@ public class TimeLineWidget extends Widget {
     private TimeLine timeLine = null;
     private Element divElement = null;
     private boolean horizontalOrientation = true;
+    private boolean serverCallOnEventClickEnabled = false;
 
     /**
      * Create timeline elements and assign renderer. The renderer must implement
@@ -108,8 +109,9 @@ public class TimeLineWidget extends Widget {
      * 
      */
     public void create() {
+    	System.out.println("init");
         timeLine = TimeLine.create(bandInfos, eventSource, divElement,
-                getClientElement(), horizontalOrientation);
+                getClientElement(), horizontalOrientation, serverCallOnEventClickEnabled);
     }
 
     /**
@@ -304,8 +306,17 @@ public class TimeLineWidget extends Widget {
     public boolean isHorizontalOrientation() {
         return horizontalOrientation;
     }
+    
+	public void setServerCallOnEventClickEnabled(
+			boolean serverCallOnEventClickEnabled) {
+		this.serverCallOnEventClickEnabled = serverCallOnEventClickEnabled;
+	}
+	
+	public boolean isServerCallOnEventClickEnabled() {
+		return serverCallOnEventClickEnabled;
+	}
 
-    public void setEventSource(EventSource eventSource) {
+	public void setEventSource(EventSource eventSource) {
         this.eventSource = eventSource;
     }
 }
