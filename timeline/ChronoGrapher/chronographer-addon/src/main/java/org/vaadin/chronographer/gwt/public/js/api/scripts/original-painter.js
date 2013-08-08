@@ -686,7 +686,17 @@ Timeline.OriginalEventPainter.prototype.showBubble = function(evt) {
 Timeline.OriginalEventPainter.prototype._showBubble = function(x, y, evt) {
     var div = document.createElement("div");
     var themeBubble = this._params.theme.event.bubble;
-    evt.fillInfoBubble(div, this._params.theme, this._band.getLabeller());
+    evt.fillInfoBubble(div, this._params.theme, this._band.getLabeller(), this._timeline._serverCallOnEventClickEnabled);
+
+    if( this._timeline._serverCallOnEventClickEnabled ) {
+	    var $bubleTitle =  $(div).find('.timeline-event-bubble-title');
+	    
+	    var self = this;
+		var clickHandler = function(elmt, domEvt, target) {
+	        return self._onClickInstantEvent($bubleTitle[0], domEvt, evt);
+	    };
+		SimileAjax.DOM.registerEvent($bubleTitle[0], "mousedown", clickHandler);
+    }
     
     SimileAjax.WindowManager.cancelPopups();
     SimileAjax.Graphics.createBubbleForContentAndPoint(div, x, y,

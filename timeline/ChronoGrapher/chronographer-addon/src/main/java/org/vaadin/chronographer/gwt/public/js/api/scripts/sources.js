@@ -519,7 +519,7 @@ Timeline.DefaultEventSource.Event.prototype = {
         }
     },
     
-    fillInfoBubble: function(elmt, theme, labeller) {
+    fillInfoBubble: function(elmt, theme, labeller, enableServerCallOnTitleClick) {
         var doc = elmt.ownerDocument;
         
         var title = this.getText();
@@ -536,6 +536,9 @@ Timeline.DefaultEventSource.Event.prototype = {
         
         var divTitle = doc.createElement("div");
         var textTitle = doc.createTextNode(title);
+        if( enableServerCallOnTitleClick != null && enableServerCallOnTitleClick ) {
+        	divTitle.style.cursor = "pointer";
+        }
         if (link != null) {
             var a = doc.createElement("a");
             a.href = link;
