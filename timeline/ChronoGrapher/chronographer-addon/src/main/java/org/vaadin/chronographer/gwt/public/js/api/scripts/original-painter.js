@@ -652,7 +652,8 @@ Timeline.OriginalEventPainter.prototype._onMouseOverInstantEvent = function(icon
 };
 
 Timeline.OriginalEventPainter.prototype._onClickInstantEvent = function(icon, domEvt, evt) {
-	ChronoGrpaher.onEventClick(evt._obj.id,evt._obj.title);
+	var myFunc = window[this._timeline._containerDiv.id];
+	myFunc.onEventClick(evt._obj.id,evt._obj.title);
 
     SimileAjax.DOM.cancelEvent(domEvt);
     return false;

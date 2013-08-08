@@ -44,9 +44,9 @@ public class ChronoGrapher extends AbstractComponent {
     private transient DateFormat df = new SimpleDateFormat(
             "EEE MMM dd yyyy HH:mm:ss Z", Locale.US);
 
-    private final List<TimelineBandInfo> bandInfos;
-    private final Events timelineEvents;
-    private final List<TimelineTheme> timelineThemes;
+    private List<TimelineBandInfo> bandInfos;
+    private Events timelineEvents;
+    private List<TimelineTheme> timelineThemes;
 
     private String width = "100%";
     private String height = "100%";
@@ -55,14 +55,29 @@ public class ChronoGrapher extends AbstractComponent {
     
 	private EventClickHandler eventClickHandler;
 
-	/**
+    public ChronoGrapher() {
+        super();
+        init(null, null);
+    }
+
+    /**
+     * This constructor should be used to enable server call on event click feature.
+     * 
+	 * @param uniqueComponentId
+	 *            unique id of ChronoGrapher component. If
+	 *            serverCallOnEventClickEnabled == true this parameter is
+	 *            mandatory
 	 * @param serverCallOnEventClickEnabled
 	 *            if value is true server call on event click feature will be
 	 *            enabled, otherwise the component will have default behavior
 	 *            (optional parameter)
 	 */
-    public ChronoGrapher(boolean... serverCallOnEventClickEnabled) {
-        super();
+    public ChronoGrapher(String uniqueComponentId, boolean serverCallOnEventClickEnabled) {
+    	super();
+    	init(uniqueComponentId, serverCallOnEventClickEnabled);
+    }
+    
+    private void init(String uniqueComponentId, Boolean serverCallOnEventClickEnabled) {
         bandInfos = new ArrayList<TimelineBandInfo>();
         timelineThemes = new ArrayList<TimelineTheme>();
         timelineEvents = new Events();
@@ -75,12 +90,15 @@ public class ChronoGrapher extends AbstractComponent {
 			}
 		});
 
-		if (serverCallOnEventClickEnabled != null
-				&& serverCallOnEventClickEnabled.length > 0) {
-			getState().serverCallOnEventClickEnabled = serverCallOnEventClickEnabled[0];
+		if (serverCallOnEventClickEnabled != null) {
+			if( uniqueComponentId==null || uniqueComponentId.isEmpty() ) {
+				throw new RuntimeException("uniqueComponentId is mandatory parameter when serverCallOnEventClickEnabled is enabled");
+			}
 			
+			getState().serverCallOnEventClickEnabled = serverCallOnEventClickEnabled;
+			String uniqueJSFuncName = uniqueComponentId + ".onEventClick";
 			com.vaadin.ui.JavaScript.getCurrent().addFunction(
-					"ChronoGrpaher.onEventClick", new JavaScriptFunction() {
+					uniqueJSFuncName, new JavaScriptFunction() {
 						@Override
 						public void call(JSONArray arguments) throws JSONException {
 							if (eventClickHandler != null) {
@@ -90,6 +108,9 @@ public class ChronoGrapher extends AbstractComponent {
 							}
 						}
 	        });
+		}
+		if( uniqueComponentId!=null && !uniqueComponentId.isEmpty() ) {
+			setId(uniqueComponentId);
 		}
     }
 

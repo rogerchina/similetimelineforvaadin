@@ -44,14 +44,14 @@ public class SimpleTimelineExample extends VerticalLayout {
     }
 
     private Component getTimelineComponent() throws ParseException {
-        timeline = new ChronoGrapher(true);
+        timeline = new ChronoGrapher("timeline-ex1-timelinewidget", true);
         timeline.setEventClickHandler(new ChronoGrapher.EventClickHandler() {
 			@Override
 			public void handleClick(String eventId, String eventTitle) {
 				Notification.show(String.format("Event with id #%s and title '%s' is clicked !", eventId, eventTitle));
 			}
 		});
-        timeline.setId("timeline-ex1-timelinewidget");
+		// timeline.setId("timeline-ex1-timelinewidget");
         timeline.setImmediate(true);
         timeline.setWidth("100%");
         timeline.setHeight("100px");
