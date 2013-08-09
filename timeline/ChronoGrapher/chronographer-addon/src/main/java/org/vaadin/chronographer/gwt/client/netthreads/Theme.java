@@ -16,10 +16,14 @@
 
 package org.vaadin.chronographer.gwt.client.netthreads;
 
-import java.util.Calendar;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.lang.time.DateFormatUtils;
+
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
  * this,currently only creates the classic theme.
@@ -105,18 +109,20 @@ public class Theme extends JavaScriptObject {
 	}
 
 	public final void setTimelineStart(Date timelineStart) {
-		// ThemeImpl.setTimelineStart(this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH),
-		// c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND),
-		// c.get(Calendar.MILLISECOND));
-		ThemeImpl.setTimelineStart(this, timelineStart.getYear() + 1900, timelineStart.getMonth(), timelineStart.getDate(), timelineStart.getHours(),
-				timelineStart.getMinutes(), timelineStart.getSeconds(), 0);
+		String[] strFields = DateTimeFormat.getFormat("yyyy:MM:dd:HH:mm:ss:SSS").format(timelineStart).split(":");
+		int[] fields = new int[strFields.length];
+		for (int i = 0; i < fields.length; i++) {
+			fields[i] = Integer.parseInt(strFields[i]);
+		}
+		ThemeImpl.setTimelineStart(this, fields[0], fields[1], fields[2], fields[3], fields[4], fields[5], fields[6]);
 	}
 
 	public final void setTimelineStop(Date timelineStop) {
-		// ThemeImpl.setTimelineStop(this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH),
-		// c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND),
-		// c.get(Calendar.MILLISECOND));
-		ThemeImpl.setTimelineStop(this, timelineStop.getYear() + 1900, timelineStop.getMonth(), timelineStop.getDate(), timelineStop.getHours(),
-				timelineStop.getMinutes(), timelineStop.getSeconds(), 0);
+		String[] strFields = DateTimeFormat.getFormat("yyyy:MM:dd:HH:mm:ss:SSS").format(timelineStop).split(":");
+		int[] fields = new int[strFields.length];
+		for (int i = 0; i < fields.length; i++) {
+			fields[i] = Integer.parseInt(strFields[i]);
+		}
+		ThemeImpl.setTimelineStop(this, fields[0], fields[1], fields[2], fields[3], fields[4], fields[5], fields[6]);
 	}
 }
