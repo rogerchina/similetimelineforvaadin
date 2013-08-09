@@ -16,6 +16,9 @@
 
 package org.vaadin.chronographer.gwt.client.netthreads;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
@@ -24,6 +27,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * @author ajr
  */
 public class Theme extends JavaScriptObject {
+
 	protected Theme() {
 		super();
 	}
@@ -95,8 +99,24 @@ public class Theme extends JavaScriptObject {
 	public final void setEventHighlightColors(String[] highlightColors) {
 		ThemeImpl.setEventHighlightColors(this, highlightColors);
 	}
-	
+
 	public final void setFirstDayOfWeek(int firstDayOfWeek) {
 		ThemeImpl.setFirstDayOfWeek(this, firstDayOfWeek);
+	}
+
+	public final void setTimelineStart(Date timelineStart) {
+		// ThemeImpl.setTimelineStart(this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH),
+		// c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND),
+		// c.get(Calendar.MILLISECOND));
+		ThemeImpl.setTimelineStart(this, timelineStart.getYear() + 1900, timelineStart.getMonth(), timelineStart.getDate(), timelineStart.getHours(),
+				timelineStart.getMinutes(), timelineStart.getSeconds(), 0);
+	}
+
+	public final void setTimelineStop(Date timelineStop) {
+		// ThemeImpl.setTimelineStop(this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH),
+		// c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND),
+		// c.get(Calendar.MILLISECOND));
+		ThemeImpl.setTimelineStop(this, timelineStop.getYear() + 1900, timelineStop.getMonth(), timelineStop.getDate(), timelineStop.getHours(),
+				timelineStop.getMinutes(), timelineStop.getSeconds(), 0);
 	}
 }

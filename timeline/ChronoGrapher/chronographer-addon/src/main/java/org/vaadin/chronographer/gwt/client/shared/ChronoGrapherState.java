@@ -1,5 +1,7 @@
 package org.vaadin.chronographer.gwt.client.shared;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.vaadin.chronographer.gwt.client.model.TimelineBandInfo;
@@ -9,14 +11,19 @@ import com.vaadin.shared.AbstractComponentState;
 
 public class ChronoGrapherState extends AbstractComponentState {
 
-    public boolean horizontal = true;
-    
-    public boolean serverCallOnEventClickEnabled = false;
+	private static final long serialVersionUID = 1L;
 
-    public List<TimelineBandInfo> bandInfos;
-    public List<TimelineTheme> timelineThemes;
+	public boolean horizontal = true;
 
-    public String eventsJson;
+	public boolean serverCallOnEventClickEnabled = false;
 
-    public boolean initialized;
+	public List<TimelineBandInfo> bandInfos;
+	public List<TimelineTheme> timelineThemes;
+
+	public Date timelineStart;
+	public Date timelineStop;
+
+	public String eventsJson;
+
+	public boolean initialized;
 }
