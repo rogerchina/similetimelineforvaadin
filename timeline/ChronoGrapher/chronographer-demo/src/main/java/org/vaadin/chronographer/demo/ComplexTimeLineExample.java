@@ -32,7 +32,9 @@ import com.vaadin.ui.VerticalLayout;
 
 @StyleSheet("complexTimeLineDarkTheme.css")
 public class ComplexTimeLineExample extends VerticalLayout {
-    private ChronoGrapher timeline;
+	private static final long serialVersionUID = 1L;
+
+	private ChronoGrapher timeline;
 
     private final DateFormat df2 = new SimpleDateFormat(
             "EEE MMM dd yyyy HH:mm:ss", Locale.US);

@@ -113,7 +113,7 @@ public class ChronoGrapherWidget extends TimeLineWidget implements ResizeHandler
 			Boolean highligh = bi.getHighligh();
 			Boolean overview = bi.getOverview();
 
-			ArrayList zones = getBandHotZones();
+			ArrayList<HotZoneBandOptions> zones = getBandHotZones();
 			for (int j = 0; j < bi.getTimelineZones().size(); j++) {
 				zones.add(createZone(bi.getTimelineZones().get(j)));
 			}
@@ -250,8 +250,6 @@ public class ChronoGrapherWidget extends TimeLineWidget implements ResizeHandler
 	}
 
 	public void setThemes(List<TimelineTheme> timelineThemes) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/**

@@ -35,8 +35,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class TimeLineWidget extends Widget {
     private EventSource eventSource = null;
-    private ArrayList bandInfos = null;
-    private ArrayList bandHotZones = null;
+    private ArrayList<BandInfo> bandInfos = null;
+    private ArrayList<HotZoneBandOptions> bandHotZones = null;
     private ArrayList bandDecorators = null;
     private TimeLine timeLine = null;
     private Element divElement = null;
@@ -56,8 +56,8 @@ public class TimeLineWidget extends Widget {
         // ---------------------------------------------------------------
         // Bands
         // ---------------------------------------------------------------
-        bandInfos = new ArrayList();
-        bandHotZones = new ArrayList();
+        bandInfos = new ArrayList<BandInfo>();
+        bandHotZones = new ArrayList<HotZoneBandOptions>();
         bandDecorators = new ArrayList();
 
         // ---------------------------------------------------------------
@@ -234,11 +234,11 @@ public class TimeLineWidget extends Widget {
         return bandDecorators;
     }
 
-    public ArrayList getBandHotZones() {
+    public ArrayList<HotZoneBandOptions> getBandHotZones() {
         return bandHotZones;
     }
 
-    public ArrayList getBandInfos() {
+    public ArrayList<BandInfo> getBandInfos() {
         return bandInfos;
     }
 

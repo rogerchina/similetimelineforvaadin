@@ -16,11 +16,7 @@
 
 package org.vaadin.chronographer.gwt.client.netthreads;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.apache.commons.lang.time.DateFormatUtils;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.i18n.client.DateTimeFormat;
