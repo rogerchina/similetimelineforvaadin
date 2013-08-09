@@ -14,7 +14,6 @@ import org.vaadin.chronographer.gwt.client.model.TimelineEvent;
 import org.vaadin.chronographer.gwt.client.model.TimelineZone;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 
@@ -48,7 +47,7 @@ public class SimpleTimelineExample extends VerticalLayout {
 		if (timelinewithStartAndEnd == null) {
 			try {
 				com.vaadin.ui.Label infoLabel = new com.vaadin.ui.Label("Timeline with start year 1977 and end year 2050.");
-				infoLabel.setId("timeline-ex4-infolabel");
+				infoLabel.setId("timeline-ex2-infolabel");
 				addComponent(infoLabel);
 				addComponent(getTimelineComponentWithStartAndEnd());
 			} catch (ParseException e) {
@@ -59,21 +58,19 @@ public class SimpleTimelineExample extends VerticalLayout {
 		try {
 			createEvents();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
 
 	private Component getTimelineComponent() throws ParseException {
-		timeline = new ChronoGrapher(true);
+		timeline = new ChronoGrapher("timeline-ex1-timelinewidget", true);
 		timeline.setEventClickHandler(new ChronoGrapher.EventClickHandler() {
 			@Override
 			public void handleClick(String eventId, String eventTitle) {
-				Notification.show(String.format("Event with id #%s and title '%s' is clicked !", eventId, eventTitle));
+				Notification.show(String.format("Event with id #%s and title '%s' on upper timeline is clicked !", eventId, eventTitle));
 			}
 		});
-		timeline.setId("timeline-ex1-timelinewidget");
 		timeline.setImmediate(true);
 		timeline.setWidth("100%");
 		timeline.setHeight("100px");
@@ -81,7 +78,7 @@ public class SimpleTimelineExample extends VerticalLayout {
 		TimelineZone zone = new TimelineZone();
 		zone.setStart(df.parse("1917"));
 		zone.setEnd(df.parse("1920"));
-		zone.setUnit(TimeUnit.WEEK);
+		zone.setUnit(TimeUnit.MONTH);
 		zone.setMultiple(1);
 		zone.setMagnify(10);
 
@@ -102,14 +99,13 @@ public class SimpleTimelineExample extends VerticalLayout {
 		timelineStart.set(Calendar.YEAR, 1977);
 		Calendar timelineStop = Calendar.getInstance();
 		timelineStop.set(Calendar.YEAR, 2050);
-		timelinewithStartAndEnd = new ChronoGrapher(true, timelineStart, timelineStop);
+		timelinewithStartAndEnd = new ChronoGrapher("timeline-ex2-timelinewidget", true, timelineStart, timelineStop);
 		timelinewithStartAndEnd.setEventClickHandler(new ChronoGrapher.EventClickHandler() {
 			@Override
 			public void handleClick(String eventId, String eventTitle) {
-				Notification.show(String.format("Event with id #%s and title '%s' is clicked !", eventId, eventTitle));
+				Notification.show(String.format("Event with id #%s and title '%s' on lower timeline is clicked !", eventId, eventTitle));
 			}
 		});
-		timelinewithStartAndEnd.setId("timeline-ex4-timelinewidget");
 		timelinewithStartAndEnd.setImmediate(true);
 		timelinewithStartAndEnd.setWidth("100%");
 		timelinewithStartAndEnd.setHeight("100px");
@@ -117,7 +113,7 @@ public class SimpleTimelineExample extends VerticalLayout {
 		TimelineZone zone = new TimelineZone();
 		zone.setStart(df.parse("1917"));
 		zone.setEnd(df.parse("1920"));
-		zone.setUnit(TimeUnit.WEEK);
+		zone.setUnit(TimeUnit.MONTH);
 		zone.setMultiple(1);
 		zone.setMagnify(10);
 

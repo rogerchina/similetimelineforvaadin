@@ -56,18 +56,22 @@ public class ChronoGrapher extends AbstractComponent {
 	private EventClickHandler eventClickHandler;
 
 	public ChronoGrapher() {
-		this(false);
+		this(null, false, null, null);
 	}
 
-	/**
-	 * @param serverCallOnEventClickEnabled
-	 *            if value is true server call on event click feature will be enabled, otherwise the component will have default behavior (optional parameter)
-	 */
-	public ChronoGrapher(boolean serverCallOnEventClickEnabled) {
+	public ChronoGrapher(String uniqueComponentId, boolean serverCallOnEventClickedEnabled) {
+		this(uniqueComponentId, serverCallOnEventClickedEnabled, null, null);
+	}
+
+	public ChronoGrapher(String uniqueComponentId, boolean serverCallOnEventClickEnabled, Calendar timelineStart, Calendar timelineStop) {
 		super();
 		bandInfos = new ArrayList<TimelineBandInfo>();
 		timelineThemes = new ArrayList<TimelineTheme>();
 		timelineEvents = new Events();
+		init(uniqueComponentId, serverCallOnEventClickEnabled, timelineStart, timelineStop);
+	}
+
+	private void init(String uniqueComponentId, boolean serverCallOnEventClickEnabled, Calendar timelineStart, Calendar timelineStop) {
 
 		registerRpc(new ChronoGrapherServerRpc() {
 			@Override
@@ -76,9 +80,14 @@ public class ChronoGrapher extends AbstractComponent {
 			}
 		});
 
-		getState().serverCallOnEventClickEnabled = serverCallOnEventClickEnabled;
 		if (serverCallOnEventClickEnabled) {
-			com.vaadin.ui.JavaScript.getCurrent().addFunction("ChronoGrpaher.onEventClick", new JavaScriptFunction() {
+			if (uniqueComponentId == null || uniqueComponentId.isEmpty()) {
+				throw new RuntimeException("uniqueComponentId is mandatory parameter when serverCallOnEventClickEnabled is enabled");
+			}
+
+			getState().serverCallOnEventClickEnabled = serverCallOnEventClickEnabled;
+			String uniqueJSFuncName = uniqueComponentId + ".onEventClick";
+			com.vaadin.ui.JavaScript.getCurrent().addFunction(uniqueJSFuncName, new JavaScriptFunction() {
 				@Override
 				public void call(JSONArray arguments) throws JSONException {
 					if (eventClickHandler != null) {
@@ -87,47 +96,14 @@ public class ChronoGrapher extends AbstractComponent {
 				}
 			});
 		}
-	}
-
-	/**
-	 * 
-	 * @param serverCallOnEventClickEnabled
-	 *            if value is true server call on event click feature will be enabled, otherwise the component will have default behavior (optional parameter)
-	 * @param timelineStart
-	 *            timeline start
-	 * @param timelineStop
-	 *            timeline stop
-	 */
-	public ChronoGrapher(boolean serverCallOnEventClickEnabled, Calendar timelineStart, Calendar timelineStop) {
-		super();
-		bandInfos = new ArrayList<TimelineBandInfo>();
-		timelineThemes = new ArrayList<TimelineTheme>();
-		timelineEvents = new Events();
-
-		registerRpc(new ChronoGrapherServerRpc() {
-			@Override
-			public void onClick(int id, int x, int y) {
-				Notification.show("Event " + id + " clicked @ (" + x + "," + y + ")");
-			}
-		});
-		getState().serverCallOnEventClickEnabled = serverCallOnEventClickEnabled;
-		if (serverCallOnEventClickEnabled) {
-			com.vaadin.ui.JavaScript.getCurrent().addFunction("ChronoGrpaher.onEventClick", new JavaScriptFunction() {
-				@Override
-				public void call(JSONArray arguments) throws JSONException {
-					if (eventClickHandler != null) {
-						eventClickHandler.handleClick(arguments.getString(0), arguments.getString(1));
-					}
-				}
-			});
+		if (uniqueComponentId != null && !uniqueComponentId.isEmpty()) {
+			setId(uniqueComponentId);
 		}
 		if (timelineStart != null) {
 			getState().timelineStart = timelineStart.getTime();
-			System.out.println("TIMELINE START: " + getState().timelineStart);
 		}
 		if (timelineStop != null) {
 			getState().timelineStop = timelineStop.getTime();
-			System.out.println("TIMELINE STOP: " + getState().timelineStop);
 		}
 	}
 
