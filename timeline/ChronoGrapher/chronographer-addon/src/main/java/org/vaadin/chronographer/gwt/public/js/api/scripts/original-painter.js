@@ -278,9 +278,9 @@ Timeline.OriginalEventPainter.prototype.paintPreciseInstantEvent = function(evt,
         
     	SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mousedown", clickHandler);
     	SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mousedown", clickHandler);
-    
-    	SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mouseover", mouseOverHandler);
-    	// SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mouseover", mouseOverHandler);
+    	if (this._timeline._mouseOverShowsPopUp) {
+	    	SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mouseover", mouseOverHandler);
+	    } 
     } else {
     	SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mousedown", mouseOverHandler);
     	SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mousedown", mouseOverHandler);
@@ -341,9 +341,11 @@ Timeline.OriginalEventPainter.prototype.paintImpreciseInstantEvent = function(ev
         SimileAjax.DOM.registerEvent(tapeElmtData.elmt, "mousedown", clickHandler);
         SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mousedown", clickHandler);
         
-        SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mouseover", mouseOverHandler);
-        SimileAjax.DOM.registerEvent(tapeElmtData.elmt, "mouseover", mouseOverHandler);
-        //SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mouseover", mouseOverHandler);
+        if (this._timeline._mouseOverShowsPopUp) {
+        	SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mouseover", mouseOverHandler);
+        	SimileAjax.DOM.registerEvent(tapeElmtData.elmt, "mouseover", mouseOverHandler);
+        	//SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mouseover", mouseOverHandler);
+        }
     } else {
     	SimileAjax.DOM.registerEvent(iconElmtData.elmt, "mousedown", mouseOverHandler);
         SimileAjax.DOM.registerEvent(tapeElmtData.elmt, "mousedown", mouseOverHandler);
@@ -653,7 +655,7 @@ Timeline.OriginalEventPainter.prototype._onMouseOverInstantEvent = function(icon
 
 Timeline.OriginalEventPainter.prototype._onClickInstantEvent = function(icon, domEvt, evt) {
 	var myFunc = window[this._timeline._containerDiv.id];
-	myFunc.onEventClick(evt._obj.id,evt._obj.title);
+	myFunc.onEventClick(evt._obj.id);
 
     SimileAjax.DOM.cancelEvent(domEvt);
     return false;

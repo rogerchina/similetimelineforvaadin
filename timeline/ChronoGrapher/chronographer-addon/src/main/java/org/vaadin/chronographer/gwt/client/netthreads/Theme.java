@@ -28,97 +28,103 @@ import com.google.gwt.i18n.client.DateTimeFormat;
  */
 public class Theme extends JavaScriptObject {
 
-	protected Theme() {
-		super();
-	}
+    protected Theme() {
+        super();
+    }
 
-	public static Theme create() {
-		return ThemeImpl.create();
-	}
+    public static Theme create() {
+        return ThemeImpl.create();
+    }
 
-	public final void setEventLabelWidth(int width) {
-		ThemeImpl.setEventLabelWidth(this, width);
-	}
+    public final void setEventLabelWidth(int width) {
+        ThemeImpl.setEventLabelWidth(this, width);
+    }
 
-	public final void setEventTrackOffset(float offset) {
-		ThemeImpl.setEventTrackOffset(this, offset);
-	}
+    public final void setEventTrackOffset(float offset) {
+        ThemeImpl.setEventTrackOffset(this, offset);
+    }
 
-	public final void setEventTrackHeight(float height) {
-		ThemeImpl.setEventTrackHeight(this, height);
-	}
+    public final void setEventTrackHeight(float height) {
+        ThemeImpl.setEventTrackHeight(this, height);
+    }
 
-	public final void setEventTrackGap(float gap) {
-		ThemeImpl.setEventTrackGap(this, gap);
-	}
+    public final void setEventTrackGap(float gap) {
+        ThemeImpl.setEventTrackGap(this, gap);
+    }
 
-	public final void setEventInstantIcon(String icon) {
-		ThemeImpl.setEventInstantIcon(this, icon);
-	}
+    public final void setEventInstantIcon(String icon) {
+        ThemeImpl.setEventInstantIcon(this, icon);
+    }
 
-	public final void setEventInstantLineColor(String lineColor) {
-		ThemeImpl.setEventInstantLineColor(this, lineColor);
-	}
+    public final void setEventInstantLineColor(String lineColor) {
+        ThemeImpl.setEventInstantLineColor(this, lineColor);
+    }
 
-	public final void setEventInstantImpreciseColor(String impreciseColor) {
-		ThemeImpl.setEventInstantImpreciseColor(this, impreciseColor);
-	}
+    public final void setEventInstantImpreciseColor(String impreciseColor) {
+        ThemeImpl.setEventInstantImpreciseColor(this, impreciseColor);
+    }
 
-	public final void setEventInstantImpreciseOpacity(int impreciseOpacity) {
-		ThemeImpl.setEventInstantImpreciseOpacity(this, impreciseOpacity);
-	}
+    public final void setEventInstantImpreciseOpacity(int impreciseOpacity) {
+        ThemeImpl.setEventInstantImpreciseOpacity(this, impreciseOpacity);
+    }
 
-	public final void setEventInstantShowLineForNoText(boolean showLineForNoText) {
-		ThemeImpl.setEventInstantShowLineForNoText(this, showLineForNoText);
-	}
+    public final void setEventInstantShowLineForNoText(boolean showLineForNoText) {
+        ThemeImpl.setEventInstantShowLineForNoText(this, showLineForNoText);
+    }
 
-	public final void setEventDurationColor(String color) {
-		ThemeImpl.setEventDurationColor(this, color);
-	}
+    public final void setEventDurationColor(String color) {
+        ThemeImpl.setEventDurationColor(this, color);
+    }
 
-	public final void setEventDurationOpacity(int opacity) {
-		ThemeImpl.setEventDurationOpacity(this, opacity);
-	}
+    public final void setEventDurationOpacity(int opacity) {
+        ThemeImpl.setEventDurationOpacity(this, opacity);
+    }
 
-	public final void setEventDurationImpreciseColor(String impreciseColor) {
-		ThemeImpl.setEventDurationImpreciseColor(this, impreciseColor);
-	}
+    public final void setEventDurationImpreciseColor(String impreciseColor) {
+        ThemeImpl.setEventDurationImpreciseColor(this, impreciseColor);
+    }
 
-	public final void setEventDurationImpreciseOpacity(int impreciseOpacity) {
-		ThemeImpl.setEventDurationImpreciseOpacity(this, impreciseOpacity);
-	}
+    public final void setEventDurationImpreciseOpacity(int impreciseOpacity) {
+        ThemeImpl.setEventDurationImpreciseOpacity(this, impreciseOpacity);
+    }
 
-	public final void setEventLabelInsideColor(String insideColor) {
-		ThemeImpl.setEventLabelInsideColor(this, insideColor);
-	}
+    public final void setEventLabelInsideColor(String insideColor) {
+        ThemeImpl.setEventLabelInsideColor(this, insideColor);
+    }
 
-	public final void setEventLabelOutsideColor(String outsideColor) {
-		ThemeImpl.setEventLabelOutsideColor(this, outsideColor);
-	}
+    public final void setEventLabelOutsideColor(String outsideColor) {
+        ThemeImpl.setEventLabelOutsideColor(this, outsideColor);
+    }
 
-	public final void setEventHighlightColors(String[] highlightColors) {
-		ThemeImpl.setEventHighlightColors(this, highlightColors);
-	}
+    public final void setEventHighlightColors(String[] highlightColors) {
+        ThemeImpl.setEventHighlightColors(this, highlightColors);
+    }
 
-	public final void setFirstDayOfWeek(int firstDayOfWeek) {
-		ThemeImpl.setFirstDayOfWeek(this, firstDayOfWeek);
-	}
+    public final void setFirstDayOfWeek(int firstDayOfWeek) {
+        ThemeImpl.setFirstDayOfWeek(this, firstDayOfWeek);
+    }
 
-	public final void setTimelineStart(Date timelineStart) {
-		String[] strFields = DateTimeFormat.getFormat("yyyy:MM:dd:HH:mm:ss:SSS").format(timelineStart).split(":");
-		int[] fields = new int[strFields.length];
-		for (int i = 0; i < fields.length; i++) {
-			fields[i] = Integer.parseInt(strFields[i]);
-		}
-		ThemeImpl.setTimelineStart(this, fields[0], fields[1], fields[2], fields[3], fields[4], fields[5], fields[6]);
-	}
+    public final void setTimelineStart(Date timelineStart) {
+        String[] strFields = DateTimeFormat
+                .getFormat("yyyy:MM:dd:HH:mm:ss:SSS").format(timelineStart)
+                .split(":");
+        int[] fields = new int[strFields.length];
+        for (int i = 0; i < fields.length; i++) {
+            fields[i] = Integer.parseInt(strFields[i]);
+        }
+        ThemeImpl.setTimelineStart(this, fields[0], fields[1], fields[2],
+                fields[3], fields[4], fields[5], fields[6]);
+    }
 
-	public final void setTimelineStop(Date timelineStop) {
-		String[] strFields = DateTimeFormat.getFormat("yyyy:MM:dd:HH:mm:ss:SSS").format(timelineStop).split(":");
-		int[] fields = new int[strFields.length];
-		for (int i = 0; i < fields.length; i++) {
-			fields[i] = Integer.parseInt(strFields[i]);
-		}
-		ThemeImpl.setTimelineStop(this, fields[0], fields[1], fields[2], fields[3], fields[4], fields[5], fields[6]);
-	}
+    public final void setTimelineStop(Date timelineStop) {
+        String[] strFields = DateTimeFormat
+                .getFormat("yyyy:MM:dd:HH:mm:ss:SSS").format(timelineStop)
+                .split(":");
+        int[] fields = new int[strFields.length];
+        for (int i = 0; i < fields.length; i++) {
+            fields[i] = Integer.parseInt(strFields[i]);
+        }
+        ThemeImpl.setTimelineStop(this, fields[0], fields[1], fields[2],
+                fields[3], fields[4], fields[5], fields[6]);
+    }
 }

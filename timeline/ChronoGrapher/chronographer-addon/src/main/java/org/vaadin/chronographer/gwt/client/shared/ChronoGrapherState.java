@@ -10,19 +10,21 @@ import com.vaadin.shared.AbstractComponentState;
 
 public class ChronoGrapherState extends AbstractComponentState {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public boolean horizontal = true;
+    public boolean horizontal = true;
 
-	public boolean serverCallOnEventClickEnabled = false;
+    public boolean serverCallOnEventClickEnabled = false;
 
-	public List<TimelineBandInfo> bandInfos;
-	public List<TimelineTheme> timelineThemes;
+    public boolean mouseOverShowsPopUp = true;
 
-	public Date timelineStart;
-	public Date timelineStop;
+    public List<TimelineBandInfo> bandInfos;
+    public List<TimelineTheme> timelineThemes;
 
-	public String eventsJson;
+    public Date timelineStart;
+    public Date timelineStop;
 
-	public boolean initialized;
+    public String eventsJson;
+
+    public boolean initialized;
 }

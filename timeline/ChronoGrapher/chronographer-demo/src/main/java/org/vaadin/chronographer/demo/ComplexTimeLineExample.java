@@ -32,9 +32,9 @@ import com.vaadin.ui.VerticalLayout;
 
 @StyleSheet("complexTimeLineDarkTheme.css")
 public class ComplexTimeLineExample extends VerticalLayout {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private ChronoGrapher timeline;
+    private ChronoGrapher timeline;
 
     private final DateFormat df2 = new SimpleDateFormat(
             "EEE MMM dd yyyy HH:mm:ss", Locale.US);
@@ -54,15 +54,6 @@ public class ComplexTimeLineExample extends VerticalLayout {
         super.attach();
         if (timeline == null) {
             timeline = new ChronoGrapher();
-            // we need to set true in ChronoGrapher constructor to enable this feature
-			// timeline.setEventClickHandler(new
-			// ChronoGrapher.EventClickHandler() {
-			// @Override
-			// public void handleClick(String eventId, String eventTitle) {
-			// Notification.show(String.format("Event with id #%s and title '%s' is clicked !",
-			// eventId, eventTitle));
-			// }
-			// });
 
             df2.setTimeZone(TimeZone.getTimeZone("GMT-0600"));
             df3.setTimeZone(TimeZone.getTimeZone("GMT-0600"));
@@ -82,7 +73,7 @@ public class ComplexTimeLineExample extends VerticalLayout {
 
             HorizontalLayout buttons = new HorizontalLayout();
             addComponent(buttons);
-            
+
             Button loadButton = new Button("Load Events",
                     new Button.ClickListener() {
                         @Override
@@ -96,16 +87,16 @@ public class ComplexTimeLineExample extends VerticalLayout {
                     });
             loadButton.setId("timeline-ex-2-loadButton");
             buttons.addComponent(loadButton);
-            
+
             Button switchThemeButton = new Button("Switch theme",
                     new Button.ClickListener() {
                         @Override
                         public void buttonClick(ClickEvent event) {
-                        	if(timeline.getStyleName().contains("dark-theme")){
-                        		timeline.setStyleName("");
-                        	}else{
-                        		timeline.setStyleName("dark-theme");
-                        	}
+                            if (timeline.getStyleName().contains("dark-theme")) {
+                                timeline.setStyleName("");
+                            } else {
+                                timeline.setStyleName("dark-theme");
+                            }
                         }
                     });
             buttons.addComponent(switchThemeButton);
@@ -266,75 +257,73 @@ public class ComplexTimeLineExample extends VerticalLayout {
     private void addEventsIntoTimeline() throws Exception {
         List<TimelineEvent> events = new ArrayList<TimelineEvent>();
         try {
-        	  Builder parser = new Builder();
-        	  Document document = parser.build("jfk.xml");
-        	  Element root = document.getRootElement();
-              int index = 0;
+            Builder parser = new Builder();
+            Document document = parser.build("jfk.xml");
+            Element root = document.getRootElement();
+            int index = 0;
 
-              // iterate through child elements of root
-              for (int i=0; i<root.getChildElements().size(); i++) {
-            	  Element element = root.getChildElements().get(i);
-            	  
-                  String start = element.getAttributeValue("start");
-                  String end = element.getAttributeValue("end");
-                  String title = element.getAttributeValue("title");
-                  String content = element.getValue();
-                  start = start.substring(0, start.length() - 9);
+            // iterate through child elements of root
+            for (int i = 0; i < root.getChildElements().size(); i++) {
+                Element element = root.getChildElements().get(i);
 
-                  String icon = element.getAttributeValue("icon");
-                  String image = element.getAttributeValue("image");
-                  String link = element.getAttributeValue("link");
-                  String tapeImage = element.getAttributeValue("tapeImage");
-                  String tapeRepeat = element.getAttributeValue("tapeRepeat");
-                  String caption = element.getAttributeValue("caption");
-                  String classname = element.getAttributeValue("classname");
-                  String color = element.getAttributeValue("color");
-                  String textColor = element.getAttributeValue("textColor");
+                String start = element.getAttributeValue("start");
+                String end = element.getAttributeValue("end");
+                String title = element.getAttributeValue("title");
+                String content = element.getValue();
+                start = start.substring(0, start.length() - 9);
 
-                  TimelineEvent event = new TimelineEvent();
-                  try {
-                      event.setStart(df2.parse(start));
-                      if (end != null) {
-                          end = end.substring(0, end.length() - 9);
-                          event.setEnd(df2.parse(end));
-                          event.setIsDuration(true);
-                      }
-                  } catch (ParseException e) {
-                      try {
-                          event.setStart(df3.parse(start));
-                          if (end != null) {
-                              end = end.substring(0, end.length() - 9);
-                              event.setEnd(df3.parse(end));
-                              event.setIsDuration(true);
-                          }
-                      } catch (ParseException e1) {
-                          System.out.println("unparseable date - skipped");
-                          continue;
-                      }
-                  }
-                  event.setTitle(title);
-                  event.setBody(content);
-                  event.setId(index);
-                  event.setIcon(icon);
-                  event.setImage(image);
-                  event.setLink(link);
-                  event.setTapeImage(tapeImage);
-                  event.setTapeRepeat(tapeRepeat);
-                  event.setCaption(caption);
-                  event.setClassname(classname);
-                  event.setColor(color);
-                  event.setTextColor(textColor);
+                String icon = element.getAttributeValue("icon");
+                String image = element.getAttributeValue("image");
+                String link = element.getAttributeValue("link");
+                String tapeImage = element.getAttributeValue("tapeImage");
+                String tapeRepeat = element.getAttributeValue("tapeRepeat");
+                String caption = element.getAttributeValue("caption");
+                String classname = element.getAttributeValue("classname");
+                String color = element.getAttributeValue("color");
+                String textColor = element.getAttributeValue("textColor");
 
-                  events.add(event);
+                TimelineEvent event = new TimelineEvent();
+                try {
+                    event.setStart(df2.parse(start));
+                    if (end != null) {
+                        end = end.substring(0, end.length() - 9);
+                        event.setEnd(df2.parse(end));
+                        event.setIsDuration(true);
+                    }
+                } catch (ParseException e) {
+                    try {
+                        event.setStart(df3.parse(start));
+                        if (end != null) {
+                            end = end.substring(0, end.length() - 9);
+                            event.setEnd(df3.parse(end));
+                            event.setIsDuration(true);
+                        }
+                    } catch (ParseException e1) {
+                        System.out.println("unparseable date - skipped");
+                        continue;
+                    }
+                }
+                event.setTitle(title);
+                event.setBody(content);
+                event.setId(index);
+                event.setIcon(icon);
+                event.setImage(image);
+                event.setLink(link);
+                event.setTapeImage(tapeImage);
+                event.setTapeRepeat(tapeRepeat);
+                event.setCaption(caption);
+                event.setClassname(classname);
+                event.setColor(color);
+                event.setTextColor(textColor);
 
-                  ++index;
-              }
-              timeline.addEvents(events);
-        	}
-        	catch (Exception ex) {
-        	  System.out.println("Error parsing xml file jfk.xml");
-        	}
-        
-       
+                events.add(event);
+
+                ++index;
+            }
+            timeline.addEvents(events);
+        } catch (Exception ex) {
+            System.out.println("Error parsing xml file jfk.xml");
+        }
+
     }
 }

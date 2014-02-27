@@ -45,6 +45,7 @@ public class TimelineUI extends UI {
         tabsheet = new TabSheet();
         tabsheet.setId("timeline-tabsheet");
         tabsheet.addTab(new SimpleTimelineExample(), "Simple example");
+        tabsheet.addTab(new MultipleTimelinesExample(), "Multiple timelines");
         tabsheet.addTab(new ComplexTimeLineExample(), "Complex example");
     }
 }

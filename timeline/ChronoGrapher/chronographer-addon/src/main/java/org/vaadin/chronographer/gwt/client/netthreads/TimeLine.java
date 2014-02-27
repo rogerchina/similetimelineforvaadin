@@ -16,55 +16,53 @@
 
 package org.vaadin.chronographer.gwt.client.netthreads;
 
+import java.util.List;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.UIObject;
 
-import java.util.List;
-
-import org.vaadin.chronographer.gwt.client.TimeLineClickHandler;
-
-
 /**
  * TimeLine
- *
+ * 
  * @author ajr
  */
-public class TimeLine extends JavaScriptObject
-{
-    protected TimeLine()
-    {
+public class TimeLine extends JavaScriptObject {
+    protected TimeLine() {
         super();
     }
 
     /**
      * Create TimeLine object
+     * 
+     * @param mouseOverShowsPopUp
      */
-    public static TimeLine create(List bands, EventSource source, Element divElement, Element clientElement, boolean horizontalOrientation, boolean serverCallOnEventClickEnabled)
-    {
-    	JavaScriptObject[] bandArr = JavaScriptObjectHelper.listToArray(bands);
+    public static TimeLine create(List bands, EventSource source,
+            Element divElement, Element clientElement,
+            boolean horizontalOrientation,
+            boolean serverCallOnEventClickEnabled, boolean mouseOverShowsPopUp) {
+        JavaScriptObject[] bandArr = JavaScriptObjectHelper.listToArray(bands);
 
         JavaScriptObject jarr = JavaScriptObjectHelper.arrayConvert(bandArr);
 
         boolean currVisible = UIObject.isVisible(clientElement);
         UIObject.setVisible(clientElement, true);
-        
-        TimeLine timeLine = TimeLineImpl.create(jarr, divElement, horizontalOrientation ? 0 : 1, serverCallOnEventClickEnabled);
+
+        TimeLine timeLine = TimeLineImpl.create(jarr, divElement,
+                horizontalOrientation ? 0 : 1, serverCallOnEventClickEnabled,
+                mouseOverShowsPopUp);
 
         UIObject.setVisible(clientElement, currVisible);
-        
-        return timeLine;
-    	
-    }
-    
 
+        return timeLine;
+
+    }
 
     /**
-     * Redraw timeline 
-     *
+     * Redraw timeline
+     * 
      */
-    public final void layout()
-    {
+    public final void layout() {
         TimeLineImpl.layout(this);
     }
 
@@ -74,37 +72,27 @@ public class TimeLine extends JavaScriptObject
      * @param dataUrl
      * @param handler
      */
-    public final void loadXML(String dataUrl, TimelineXMLHandler handler)
-    {
+    public final void loadXML(String dataUrl, TimelineXMLHandler handler) {
         TimeLineImpl.loadXML(dataUrl, handler);
     }
- 
+
     /**
      * Close info bubble for indicated band
+     * 
      * @param index
      */
-    public final void closeBubble(int index)
-    {
-    	TimeLineImpl.closeBubble(index, this);
+    public final void closeBubble(int index) {
+        TimeLineImpl.closeBubble(index, this);
     }
-    
+
     /**
-     * Add click handler for handling clicks on the events
-     * @param _listener
+     * Accessor function for date setting.. Will flesh out later
+     * 
+     * currently use BandOptions.setDate for functionality... Hooks for that are
+     * in ITimeLineRender interface
+     * 
      */
-    public final void addClickHandler(TimeLineClickHandler _listener) {
-    	TimeLineImpl.setClickListener(_listener);
-    }
-    
-    /**
-     *  Accessor function for date setting..
-     *  Will flesh out later
-     *  
-     *  currently use BandOptions.setDate for functionality...
-     *  Hooks for that are in ITimeLineRender interface
-     *  
-     */
-    public final void centerOnEvent(){
-    	
+    public final void centerOnEvent() {
+
     }
 }

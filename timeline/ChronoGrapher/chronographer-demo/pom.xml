@@ -17,8 +17,8 @@
 
         <!-- May be overridden by the build system -->
         <license.short.name>apache2</license.short.name>
-        <vaadin.version>7.0.5</vaadin.version>
-        <vaadin.plugin.version>7.0.5</vaadin.plugin.version>
+        <vaadin.version>7.1.10</vaadin.version>
+        <vaadin.plugin.version>7.1.10</vaadin.plugin.version>
 
         <!-- Must not change this because of the Directory -->
         <Implementation-Title>ChronoGrapher</Implementation-Title>

@@ -42,6 +42,7 @@ public class TimeLineWidget extends Widget {
     private Element divElement = null;
     private boolean horizontalOrientation = true;
     private boolean serverCallOnEventClickEnabled = false;
+    private boolean mouseOverShowsPopUp = false;
 
     /**
      * Create timeline elements and assign renderer. The renderer must implement
@@ -109,9 +110,10 @@ public class TimeLineWidget extends Widget {
      * 
      */
     public void create() {
-    	System.out.println("init");
+        System.out.println("init");
         timeLine = TimeLine.create(bandInfos, eventSource, divElement,
-                getClientElement(), horizontalOrientation, serverCallOnEventClickEnabled);
+                getClientElement(), horizontalOrientation,
+                serverCallOnEventClickEnabled, mouseOverShowsPopUp);
     }
 
     /**
@@ -306,17 +308,21 @@ public class TimeLineWidget extends Widget {
     public boolean isHorizontalOrientation() {
         return horizontalOrientation;
     }
-    
-	public void setServerCallOnEventClickEnabled(
-			boolean serverCallOnEventClickEnabled) {
-		this.serverCallOnEventClickEnabled = serverCallOnEventClickEnabled;
-	}
-	
-	public boolean isServerCallOnEventClickEnabled() {
-		return serverCallOnEventClickEnabled;
-	}
 
-	public void setEventSource(EventSource eventSource) {
+    public void setServerCallOnEventClickEnabled(
+            boolean serverCallOnEventClickEnabled) {
+        this.serverCallOnEventClickEnabled = serverCallOnEventClickEnabled;
+    }
+
+    public boolean isServerCallOnEventClickEnabled() {
+        return serverCallOnEventClickEnabled;
+    }
+
+    public void setMouseOverPopEnabled(boolean mouseOverShowsPopUp) {
+        this.mouseOverShowsPopUp = mouseOverShowsPopUp;
+    }
+
+    public void setEventSource(EventSource eventSource) {
         this.eventSource = eventSource;
     }
 }

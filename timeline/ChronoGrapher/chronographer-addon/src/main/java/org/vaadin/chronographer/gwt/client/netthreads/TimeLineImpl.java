@@ -35,9 +35,10 @@ class TimeLineImpl {
     private static TimeLineClickHandler listener;
 
     public native static TimeLine create(JavaScriptObject bands,
-            Element divElement, int orientation, boolean serverCallOnEventClickEnabled) /*-{
-                                                 return $wnd.Timeline.create(divElement, bands, orientation, null, serverCallOnEventClickEnabled)
-                                                 }-*/;
+            Element divElement, int orientation,
+            boolean serverCallOnEventClickEnabled, boolean mouseOverShowsPopUp) /*-{
+                                                                                return $wnd.Timeline.create(divElement, bands, orientation, null, serverCallOnEventClickEnabled, mouseOverShowsPopUp)
+                                                                                }-*/;
 
     public native static void loadXML(String dataUrl, TimelineXMLHandler handler) /*-{
                                                                                   $wnd.Timeline.loadXML(dataUrl, function(xml, url) { handler.@org.vaadin.chronographer.gwt.client.netthreads.TimelineXMLHandler::onCompletion(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(xml,url) });
@@ -55,30 +56,10 @@ class TimeLineImpl {
                                                                         timeLine.getBand(index).closeBubble();
                                                                         }-*/;
 
-    public static void setClickListener(TimeLineClickHandler _listener) {
-        useClickListener();
-        listener = _listener;
-    }
-
     public static void clickCallback(int id, int x, int y) {
         if (listener != null) {
             listener.onClick(id, x, y);
         }
     }
 
-    public native static void useClickListener()/*-{    	
-                                                try {
-                                                $wnd.Timeline.DetailedEventPainter.prototype._showBubble = function(x, y, evt) {
-                                                @org.vaadin.chronographer.gwt.client.netthreads.TimeLineImpl::clickCallback(III)(evt.getID(),x,y);
-                                                }
-                                                return;
-                                                }finally {}
-                                                
-                                                try {
-                                                $wnd.Timeline.OriginalEventPainter.prototype._showBubble = function(x, y, evt) {
-                                                @org.vaadin.chronographer.gwt.client.netthreads.TimeLineImpl::clickCallback(III)(evt.getID(),x,y);
-                                                }
-                                                return;
-                                                }finally {}
-                                                }-*/;
 }
