@@ -251,21 +251,24 @@
      */
     if (typeof SimileAjax == "undefined") {
         window.SimileAjax_onLoad = loadMe;
-        
-        var widgetsetname = "";
-        var head = document.documentElement.getElementsByTagName("head");
-        var scripts = head[0].getElementsByTagName("script");
-        for (var s = 0; s < scripts.length; s++) {
-            var src = scripts[s].src;
-            var i = src.indexOf("/VAADIN/widgetsets/");
-            if (i >= 0) {
-            	var j = src.indexOf("/",i+19);
-            	widgetsetname = src.substring(i,j);           
+        var urlPrefix = "";
+        var heads = document.documentElement.getElementsByTagName("head");
+        for (var h = 0; h < heads.length; h++) {
+            var links = heads[h].getElementsByTagName("link");
+            for (var s = 0; s < links.length; s++) {
+                var url = links[s].href;
+                var i = url.indexOf("css/timeline.css");
+                if (i >= 0) {
+                    urlPrefix = url.substr(0, i);
+                }
             }
+        }
+        if (urlPrefix.lenght==0) {
+        	throw new Error("Failed to derive URL prefix for Timeline API code files");
         }
         
         var url = useLocalResources ?
-            "."+widgetsetname+"/ajax/api/simile-ajax-api.js?bundle=false" :
+        		urlPrefix+"ajax/api/simile-ajax-api.js?bundle=false" :
             "http://static.simile.mit.edu/ajax/api-2.2.0/simile-ajax-api.js";
         if (typeof Timeline_ajax_url == "string") {
            url = Timeline_ajax_url;
