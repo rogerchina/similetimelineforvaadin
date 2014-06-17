@@ -25,7 +25,7 @@ Simple Maven tutorials:
 
 add on can be found at: chronographer-addon/target/chronographer-addon-<version>.jar
 
-***** How to install ChronoGrapher to your Maven repository *****
+***** How to install ChronoGrapher add-on to your Maven repository *****
 
 To install addon to your local repository, run:
 
@@ -35,26 +35,10 @@ To install addon to your local repository, run:
 
 ***** How to run test application *****
 
-First compile and install addon (if not already installed)
-> cd chronographer-addon
-> mvn install
-
-Then compile demo widgetset and start HTTP server
-> cd ../chronographer-demo
-> mvn vaadin:compile
+> cd chronographer
+> mvn package
+> cd chronographer-demo
 > mvn jetty:run
 
+
 Demo application is running at http://localhost:8080/chronographer
-
-
-***** How to compile test application WAR *****
-
-First compile and install addon (if not already installed)
-> cd chronographer-addon
-> mvn install
-
-Then construct demo package (this should automatically compile widgetset)
-> cd ../chronographer-demo
-> mvn package
-
-War package can be now found at chronographer-demo/target/ChronoGrapherDemo.war
