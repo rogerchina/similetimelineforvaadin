@@ -16,16 +16,18 @@ Vaadin Directory: http://vaadin.com/directory#addon/chronographer
 License: Apache License 2.0
 
 Simple Maven tutorials:
+=======================
 
-
-***** How to compile add on jar package for your project *****
+How to compile add on jar package for your project
+--------------------------------------------------
 
 > cd chronographer-addon
 > mvn package
 
 add on can be found at: chronographer-addon/target/chronographer-addon-<version>.jar
 
-***** How to install ChronoGrapher add-on to your Maven repository *****
+How to install ChronoGrapher add-on to your Maven repository
+------------------------------------------------------------
 
 To install addon to your local repository, run:
 
@@ -33,7 +35,8 @@ To install addon to your local repository, run:
 > mvn install
 
 
-***** How to run test application *****
+How to run test application
+---------------------------
 
 > cd chronographer
 > mvn package
