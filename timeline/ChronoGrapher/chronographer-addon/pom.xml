@@ -11,8 +11,8 @@
 	<properties>
 	   	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	   	<project.organization>Vaadin Ltd</project.organization>
-	   	<vaadin.version.maven>7.1.10</vaadin.version.maven>
-	   	<vaadin.plugin.version>7.1.10</vaadin.plugin.version>
+	   	<vaadin.version.maven>7.1.15</vaadin.version.maven>
+	   	<vaadin.plugin.version>7.1.15</vaadin.plugin.version>
 	
 	   	<snapshot.repository.url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</snapshot.repository.url>
 	   	<Implementation-Version>${project.version}</Implementation-Version>
@@ -100,15 +100,15 @@
 				<artifactId>vaadin-maven-plugin</artifactId>
 				<version>${vaadin.plugin.version}</version>
 				<configuration>
-                                    <modules>
-                                            <module>org.vaadin.chronographer.gwt.ChronoGrapherWidgetSet</module>
-                                    </modules>
-                                    <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-                                    <runTarget>xsite</runTarget>
-                                    <noServer>true</noServer>
-                                    <port>8080</port>
-                                    <validateOnly>true</validateOnly>
-                                    <strict>true</strict>
+	                <modules>
+	                        <module>org.vaadin.chronographer.gwt.ChronoGrapherWidgetSet</module>
+	                </modules>
+	                <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+	                <runTarget>xsite</runTarget>
+	                <noServer>true</noServer>
+	                <port>8080</port>
+	                <validateOnly>true</validateOnly>
+	                <strict>true</strict>
 				</configuration>
 		  	</plugin>	
 			<plugin>

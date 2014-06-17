@@ -19,11 +19,26 @@
         <init-param>
             <description>Application widgetset</description>
             <param-name>widgetset</param-name>
-            <param-value>org.vaadin.chronographer.demo.widgetset.ChronoGrapherDemoWidgetSet</param-value>
+            <param-value>org.vaadin.chronographer.gwt.ChronoGrapherCombinedWidgetSet</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>ChronoGrapher Demo Application</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+<!--     <servlet-mapping>
+        <servlet-name>ChronoGrapher Demo Application</servlet-name>
+        <url-pattern>/VAADIN/*</url-pattern>
+    </servlet-mapping> -->
+    
+<!--     <servlet>
+		<servlet-name>remoteLogging</servlet-name>
+		<servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class>
+	</servlet> -->
+	
+<!-- 	<servlet-mapping>
+		<servlet-name>remoteLogging</servlet-name>
+		<url-pattern>/VAADIN/widgetsets/org.vaadin.chronographer.demo.ChronoGrapherDemoWidgetSet/remote_logging</url-pattern>
+	</servlet-mapping> -->
+    
 </web-app>

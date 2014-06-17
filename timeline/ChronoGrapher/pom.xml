@@ -10,6 +10,7 @@
     
     <modules>
         <module>chronographer-addon</module>
+        <module>chronographer-widgetset</module>
         <module>chronographer-demo</module>
     </modules>
     

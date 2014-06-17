@@ -13,7 +13,6 @@ import org.vaadin.chronographer.gwt.client.model.TimelineBandInfo;
 import org.vaadin.chronographer.gwt.client.model.TimelineEvent;
 import org.vaadin.chronographer.gwt.client.model.TimelineZone;
 
-import com.google.gwt.layout.client.Layout.Alignment;
 import com.vaadin.shared.ui.colorpicker.Color;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
